@@ -1,4 +1,5 @@
 
+var audiowand_mode;
 
 // This is called when moving between pages first with the
 // uri then with the fragment of dom that is about to be displayed.
@@ -166,7 +167,33 @@ function resizeMapWindow(){
              
     };
     
+    // initialise to wand
+    audiowand_mode = 'wand';
+    $('#audiowand-mode-wand').attr('checked', 'true');
+    
  });
+ 
+ $(document).on('pagecreate', '#index-page', function(e, data) {
+     // listen to the scroll bar
+     $('#audiowand-mode-wand').change(modeChanged);
+     $('#audiowand-mode-headphones').change(modeChanged);
+ });
+ 
+ function modeChanged(){
+     
+     // kill any audio to save having to re-route it.
+     stopAudio();
+     
+     // n.b. global var
+     audiowand_mode = $(this)[0].value;
+     
+     if(audiowand_mode == 'wand'){
+        alert('Audio will come through phones earpiece.');
+     }else{
+        alert('Audio will come through headphones or speaker.');
+     }
+     
+ }
  
  /*
   *  A B O U T - P A G E 

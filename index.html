@@ -50,12 +50,15 @@
             <div class="ui-bar">
                     <form>
                         <fieldset data-role="controlgroup" data-type="horizontal">
-                            <input name="radio-choice-h-2" id="radio-choice-h-2a" value="off"  type="radio">
-                            <label for="radio-choice-h-2a">Headphone Mode</label>
-                            <input name="radio-choice-h-2" id="radio-choice-h-2b" value="on" checked="checked" type="radio">
-                            <label for="radio-choice-h-2b">Wand Mode</label>
+                            <input name="audiowand-mode-choice" id="audiowand-mode-headphones" value="headphones"  type="radio">
+                            <label for="audiowand-mode-headphones">Headphone Mode</label>
+                            <input name="audiowand-mode-choice" id="audiowand-mode-wand" value="wand" checked="checked" type="radio">
+                            <label for="audiowand-mode-wand">Wand Mode</label>
                         </fieldset>
                     </form>
+                    <div data-role="popup" id="positionWindow" class="ui-content"data-position-to="window"  data-theme="a">
+                        <p>Changed...</p>
+                    </div>
              </div>
         </div>
         
