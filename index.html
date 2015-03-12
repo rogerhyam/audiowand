@@ -25,11 +25,15 @@
         
         <!-- Application javascript -->
         <script src="data/poi.js" type="text/javascript" charset="utf-8"></script>
+        <script src="data/map.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/main.js" type="text/javascript"></script>
         
     </head> 
 <body>
     
+    <!-- A U D I O -->
+    <audio id="audiowand-audio" ></audio>
+        
     <!--  H O M E - P A G E  -->
     <div data-role="page" id="index-page">
         <div data-role="header" data-position="fixed" >
@@ -56,7 +60,7 @@
         </div>
         
     </div>
-    
+
     <!--  M A P - P A G E  -->
     <div data-role="page" id="map-page">
         <div data-role="header" data-position="fixed" >
@@ -65,19 +69,24 @@
             <a data-transition="slide" data-icon="navigation" data-iconpos="right" >Navigate</a>
         </div><!-- /header -->
     
-        <div data-role="content">	
-                <h2>Map is here</h2>
+        <div data-role="content" id="map-page-content">	
+               <div id="map-window">
+                   <div id="map-canvas">
+                       <img src="data/images/dawyck_map_1.5k.jpg" />
+                   </div>
+               </div>
         </div>
         
         <div data-role="footer" data-position="fixed" >
             <div class="ui-bar">
                 <form class="full-width-slider">
-                    <input name="slider-zoom" id="slider-1" min="0" max="100" value="50" type="range">
+                    <input name="slider-zoom" id="slider-zoom" min="0" max="100" value="50" type="range">
                 </form>
             </div>
         </div>
     </div>
     
+
     <!--  A B O U T - P A G E  -->
     <div data-role="page" id="about-page">
         <div data-role="header" data-position="fixed" >
@@ -85,7 +94,6 @@
             <h1>About</h1>
             <a href="#index-page" data-transition="slide" data-icon="arrow-r" data-iconpos="right" class="ui-btn-right" >List</a>
         </div><!-- /header -->
-    
         <div data-role="content">	
                 <h2>Native Trees</h2>
         </div>

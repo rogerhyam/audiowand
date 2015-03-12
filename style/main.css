@@ -10,3 +10,55 @@
 #index-page-footer{
     text-align: right;
 }
+
+ul#audiowand-poi-list li.stop-state a{
+    color:red;
+}
+
+ul#audiowand-poi-list li.stop-state a:after {
+  background-color: red;
+}
+
+#map-page div[data-role="content"]{
+    padding: 0px;
+}
+
+#map-window{
+    width:auto;
+    overflow:auto;
+    
+    padding: 0px;
+    margin: 0px;
+
+    
+    
+    /*
+    
+    position : absolute !important; 
+    top : 40px !important;  
+    right : 0; 
+    bottom : 58px !important;  
+    left : 0 !important;
+    */
+}
+
+#map-canvas{
+    position:relative;
+}
+
+#map-canvas div.map-marker{
+    position: absolute;
+    color: white;
+    background-color:red;
+    font-size: 20px;
+    height: 25px;
+    width: 25px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 3px;
+    border: 1px solid black;
+    border-radius: 25px;
+}
+#map-canvas div.map-marker:after {
+  background-color: red;
+}
