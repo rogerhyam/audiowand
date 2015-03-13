@@ -8,7 +8,7 @@
 }
 
 #index-page-footer{
-    text-align: right;
+    text-align: center;
 }
 
 ul#audiowand-poi-list li.stop-state a{
@@ -29,8 +29,6 @@ ul#audiowand-poi-list li.stop-state a:after {
     
     padding: 0px;
     margin: 0px;
-
-    
     
     /*
     
@@ -62,3 +60,16 @@ ul#audiowand-poi-list li.stop-state a:after {
 #map-canvas div.map-marker:after {
   background-color: red;
 }
+
+#audiowand-play-through-earpiece div{
+    text-align: center;
+}
+
+#audiowand-play-through-earpiece div a{
+   color: red;
+}
+
+#audiowand-play-through-earpiece div a:after{
+    background-color: red;
+}
+

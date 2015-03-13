@@ -1,5 +1,7 @@
 
 var audiowand_mode;
+var audiowand_media_player;
+var audiowand_play_next; 
 
 // This is called when moving between pages first with the
 // uri then with the fragment of dom that is about to be displayed.
@@ -20,11 +22,16 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
      switch(data.toPage.attr("id")){
          case 'map-page':
              resizeMapWindow(); // needed when things have a size
+             updateMapSize();
              break;
-       
-       // default:
-      //     console.log("No pagechange method for " + data.toPage.attr("id"));
-         
+         case 'index-page':
+            if(!isNaN(audiowand_play_next)){
+                var li = $("#audiowand-poi-list li:nth-child(" + (audiowand_play_next+1) + ")");
+                $.mobile.silentScroll(li.offset().top - 30);
+                toggleAudio(li);
+                audiowand_play_next = false;
+            }
+            break;
      }
      
  });
@@ -62,19 +69,17 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
         // and clickable
         div.click(function(e){
             
-            var index = $(this).data('audiowand-poi-index');
-            var li = $("#audiowand-poi-list li:nth-child(" + (index+1) + ")");
-            toggleAudio(li);
+            audiowand_play_next = $(this).data('audiowand-poi-index');
             window.location = '#index-page';
+            //var li = $("#audiowand-poi-list li:nth-child(" + (index+1) + ")");
+            //toggleAudio(li);
             
-           
         });
         
         // put it before the image so it is on top
         $('#map-canvas').prepend(div);
         
     };
-   
    
 });
 
@@ -113,6 +118,7 @@ function updateMapSize(){
 }
 
 function resizeMapWindow(){
+    
     var new_height = $(window).height() - $('#map-page div[data-role="header"]').outerHeight() - $('#map-page div[data-role="footer"]').outerHeight();
     $('#map-window').outerHeight(new_height);
     
@@ -127,6 +133,15 @@ function resizeMapWindow(){
         $('#slider-zoom').attr('min', audiowand_map.image_width * ($('#map-window').height()/audiowand_map.image_height) );
     }
     $('#slider-zoom').attr('max', audiowand_map.image_width);
+    
+    
+    // set the slider position for start
+    var max = $('#slider-zoom').attr('max');
+    var min = $('#slider-zoom').attr('min');
+    var dif = max - min;
+    var middle = parseInt(min) + parseInt(dif/2);
+    $('#slider-zoom').val(middle);
+    $('#slider-zoom').slider('refresh');
     
 }
 
@@ -159,7 +174,7 @@ function resizeMapWindow(){
         img.attr('src', 'data/' + poi.image);
         a.append(img);
         
-        var h2 = $('<h2>'+ poi.title   +'</h2>');
+        var h2 = $('<h2>'+ (i+1) + ". " + poi.title   +'</h2>');
         a.append(h2);
         
         var p = $('<p>'+ poi.subtitle   +'</p>');
@@ -175,8 +190,29 @@ function resizeMapWindow(){
  
  $(document).on('pagecreate', '#index-page', function(e, data) {
      // listen to the scroll bar
-     $('#audiowand-mode-wand').change(modeChanged);
-     $('#audiowand-mode-headphones').change(modeChanged);
+     $('#audiowand-mode-earpiece').change(modeChanged);
+     $('#audiowand-mode-speaker').change(modeChanged);
+     
+     // set the audio mode depending on what is available
+     if(typeof AudioToggle != 'undefined' && AudioToggle.setAudioMode(AudioToggle.EARPIECE)){
+         // default to earpeice if we are on a phone 
+         audiowand_mode = 'earpiece';
+         $('#audiowand-mode-earpiece').prop('checked', true);
+         $('#audiowand-mode-speaker').prop('checked', false);
+         $('#index-page-footer').show();
+     }else{
+          audiowand_mode = 'speaker';
+          $('#audiowand-mode-speaker').prop('checked', true);
+          $('#audiowand-mode-earpiece').prop('checked', false);
+         // fixme - hide footer all together if we are not on a phone
+         //$('#index-page-footer').hide();
+     }
+     
+     // listen for the stop button on the earpiece popup
+     $('#audiowand-play-through-earpiece div a').click(function(){
+         stopAudio();
+     });
+     
  });
  
  function modeChanged(){
@@ -187,10 +223,30 @@ function resizeMapWindow(){
      // n.b. global var
      audiowand_mode = $(this)[0].value;
      
-     if(audiowand_mode == 'wand'){
-        alert('Audio will come through phones earpiece.');
+     if(typeof AudioToggle != 'undefined'){
+          switch(audiowand_mode) {
+              case 'speaker':
+                  AudioToggle.setAudioMode(AudioToggle.SPEAKER);
+                  break;
+              case 'earpiece':
+                  AudioToggle.setAudioMode(AudioToggle.EARPIECE);
+                  break;
+              default:
+                  console.log("Unrecognised audio mode: " + audiowand_mode);
+          }
+      }else{
+          
+          alert("AudioToggle not available to set audio mode to: " + audiowand_mode);
+          $('#audiowand-mode-speaker').prop('checked', true);
+          audiowand_mode = 'speaker';
+      }
+      
+     if(audiowand_mode == 'earpiece'){
+        //alert('Audio will come through phones earpiece.');
+        $('#audiowand-switch-to-earpiece').popup('open');
      }else{
-        alert('Audio will come through headphones or speaker.');
+        //alert('Audio will come through headphones or speaker.');
+        $('#audiowand-switch-to-speaker').popup('open');
      }
      
  }
@@ -239,11 +295,37 @@ function startAudio(active_li){
     active_li.addClass('stop-state');
     active_li.attr('data-icon', 'minus');
     active_li.find('a').removeClass('ui-icon-audio').addClass('ui-icon-minus');
-    console.log(active_li);
+    
+    // flash up a dialogue to hold it to your ear
+    if(audiowand_mode == 'earpiece'){
+         $('#audiowand-play-through-earpiece').popup('open');
+    }
+    
+     $('#audiowand-play-through-earpiece').popup('open');
+
 }
 
 function startAudioCordova(active_li){
     console.log('startAudioCordova');
+    
+    var media_url = cordova.file.applicationDirectory + 'www/' + active_li.data('audiowand-mp3');
+    console.log('Playing media from: ' + media_url);
+    
+    audiowand_media_player = new Media(media_url,
+        // success callback
+        function () { console.log("playAudio():Audio Success"); },
+        // error callback
+        function (err) {
+          console.log("playAudio():Audio Error: " + err.message);
+          if (err.code == MediaError.MEDIA_ERR_ABORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_ABORTED");
+          if (err.code == MediaError.MEDIA_ERR_NETWORK) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NETWORK");
+          if (err.code == MediaError.MEDIA_ERR_DECODE) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_DECODE");
+          if (err.code == MediaError.MEDIA_ERR_NONE_SUPPORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NONE_SUPPORTED");
+        }
+    );
+    
+    audiowand_media_player.play();
+    
 }
 
 function startAudioBrowser(active_li){
@@ -275,12 +357,15 @@ function stopAudio(){
 
 function stopAudioCordova(){
      console.log('stopAudioCordova');
+     if(audiowand_media_player){
+         audiowand_media_player.stop();
+         audiowand_media_player = false;
+     }
 }
 
 function stopAudioBrowser(){
      console.log('stopAudioBrowser');
      $('#audiowand-audio')[0].pause();
-     
 }
 
 
