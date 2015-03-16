@@ -1,7 +1,6 @@
 
-var audiowand_mode;
 var audiowand_media_player;
-var audiowand_play_next = -1; 
+var audiowand_play_next = -1;
 
 // This is called when moving between pages first with the
 // uri then with the fragment of dom that is about to be displayed.
@@ -217,55 +216,9 @@ function resizeMapWindow(){
      if(!window.cordova){
           $('#audiowand-audio').bind('ended', stopAudio);
      }
-     
-     // listen to mode switch
-     $('#audiowand-mode-earpiece').change(modeChanged);
-     $('#audiowand-mode-speaker').change(modeChanged);
-     
-     // listen for the stop button on the earpiece popup
-     $('#audiowand-play-through-earpiece div a').click(function(){
-         stopAudio();
-     });
-     
+    
  });
  
- 
- 
- function modeChanged(){
-     
-     // kill any audio to save having to re-route it.
-     stopAudio();
-     
-     // n.b. global var
-     audiowand_mode = $(this)[0].value;
-     
-     if(typeof AudioToggle != 'undefined'){
-          switch(audiowand_mode) {
-              case 'speaker':
-                  AudioToggle.setAudioMode(AudioToggle.SPEAKER);
-                  break;
-              case 'earpiece':
-                  AudioToggle.setAudioMode(AudioToggle.EARPIECE);
-                  break;
-              default:
-                  console.log("Unrecognised audio mode: " + audiowand_mode);
-          }
-      }else{
-          
-          alert("AudioToggle not available to set audio mode to: " + audiowand_mode);
-          $('#audiowand-mode-speaker').prop('checked', true);
-          audiowand_mode = 'speaker';
-      }
-      
-     if(audiowand_mode == 'earpiece'){
-        //alert('Audio will come through phones earpiece.');
-        $('#audiowand-switch-to-earpiece').popup('open');
-     }else{
-        //alert('Audio will come through headphones or speaker.');
-        $('#audiowand-switch-to-speaker').popup('open');
-     }
-     
- }
  
  /*
   *  A B O U T - P A G E 
@@ -285,50 +238,9 @@ function resizeMapWindow(){
  */
 function toggleAudio(active_li){
     
-    console.log('toggleAudio');
+    // console.log('toggleAudio');
     
-    
-    // if the audio mode is not set then we initialise
-    // it depending on whether AudioToggle is present
-    // this needs to happen here because AudioToggle isn't initialised
-    // during page create
 
-
-    if(typeof audiowand_mode == 'undefined'){
-    
-        console.log("audiowand_mode not set yet");
-    
-        if(typeof AudioToggle == 'undefined'){
-            
-            // we don't have access to AudioToggle so default to speaker.
-             console.log("AudioToggle NOT present or earpiece NOT available");
-             audiowand_mode = 'speaker';
-             $('#audiowand-mode-speaker').prop('checked', true).checkboxradio("refresh");
-             $('#audiowand-mode-earpiece').prop('checked', false).checkboxradio("refresh");
-            // fixme - hide footer all together if we are not on a phone
-            //$('#index-page-footer').hide();
-            
-         }else{
-            
-              // Looks like we are on a phone so default to earpiece
-              console.log("AudioToggle present");
-              audiowand_mode = 'earpiece';
-              $('#audiowand-mode-earpiece').prop('checked', true).checkboxradio("refresh");
-              $('#audiowand-mode-speaker').prop('checked', false).checkboxradio("refresh");
-              $('#index-page-footer').show();
-            
-         }
-    
-    }
-
-    
-    if(typeof AudioToggle == 'undefined'){
-        console.log('AudioToggle is undefined');
-    }else{
-        console.log('setting earpiece mode = ' + AudioToggle.setAudioMode(AudioToggle.EARPIECE));
-    }
-
-    
     // if they have clicked on a active link then just stop everything.
     if(active_li.hasClass('stop-state')){
         stopAudio();
@@ -358,13 +270,6 @@ function startAudio(active_li){
     active_li.attr('data-icon', 'minus');
     active_li.find('a').removeClass('ui-icon-audio').addClass('ui-icon-minus');
     
-    // flash up a dialogue to hold it to your ear
-    if(audiowand_mode == 'earpiece'){
-         $('#audiowand-play-through-earpiece').popup('open');
-    }
-    
-     //$('#audiowand-play-through-earpiece').popup('open');
-
 }
 
 function startAudioCordova(active_li){
@@ -424,8 +329,6 @@ function stopAudio(){
     $('#audiowand-poi-list li').removeClass('stop-state');
     $('#audiowand-poi-list li').attr('data-icon', 'audio');
     $('#audiowand-poi-list li').find('a').removeClass('ui-icon-minus').addClass('ui-icon-audio');
-    $('#audiowand-play-through-earpiece').popup( "close" );
-    
 
 }
 
