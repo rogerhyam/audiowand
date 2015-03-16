@@ -1,7 +1,7 @@
 
 var audiowand_mode;
 var audiowand_media_player;
-var audiowand_play_next; 
+var audiowand_play_next = -1; 
 
 // This is called when moving between pages first with the
 // uri then with the fragment of dom that is about to be displayed.
@@ -10,7 +10,8 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
     
         // we stop audio on a page change - no matter where we are going...
         // turn off the audio if it is playing - they must concentrate!
-       // stopAudio();    
+       // stopAudio();
+       
 });
 
 
@@ -21,16 +22,42 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
      
      switch(data.toPage.attr("id")){
          case 'map-page':
+             stopAudio();
              resizeMapWindow(); // needed when things have a size
              updateMapSize();
              break;
          case 'index-page':
-            if(!isNaN(audiowand_play_next)){
+         
+            // are we supposed to be play something on load - coming from map page
+            if(audiowand_play_next > -1){
+                
                 var li = $("#audiowand-poi-list li:nth-child(" + (audiowand_play_next+1) + ")");
-                $.mobile.silentScroll(li.offset().top - 30);
-                toggleAudio(li);
-                audiowand_play_next = false;
+                
+                console.log("going to scroll");
+
+                // scroll it into view then call play on it
+                // this stops the warning box being scrolled of the page.
+                $('html, body').animate({
+                    scrollTop: li.offset().top - 40},
+                    400,
+                    'swing',
+                    function(){
+                        console.log("animation over");
+                        console.log(li);
+                        if(audiowand_play_next > -1){
+                            audiowand_play_next = -1;
+                            toggleAudio(li);
+                        }
+                    }
+                );
+            
             }
+            break;
+        case 'about-page':
+            stopAudio();
+            break;
+        case 'credits-page':
+            stopAudio();
             break;
      }
      
@@ -182,31 +209,18 @@ function resizeMapWindow(){
              
     };
     
-    // initialise to wand
-    audiowand_mode = 'wand';
-    $('#audiowand-mode-wand').attr('checked', 'true');
-    
  });
  
  $(document).on('pagecreate', '#index-page', function(e, data) {
-     // listen to the scroll bar
+     
+     // listen to audio finishing - browser only
+     if(!window.cordova){
+          $('#audiowand-audio').bind('ended', stopAudio);
+     }
+     
+     // listen to mode switch
      $('#audiowand-mode-earpiece').change(modeChanged);
      $('#audiowand-mode-speaker').change(modeChanged);
-     
-     // set the audio mode depending on what is available
-     if(typeof AudioToggle != 'undefined' && AudioToggle.setAudioMode(AudioToggle.EARPIECE)){
-         // default to earpeice if we are on a phone 
-         audiowand_mode = 'earpiece';
-         $('#audiowand-mode-earpiece').prop('checked', true);
-         $('#audiowand-mode-speaker').prop('checked', false);
-         $('#index-page-footer').show();
-     }else{
-          audiowand_mode = 'speaker';
-          $('#audiowand-mode-speaker').prop('checked', true);
-          $('#audiowand-mode-earpiece').prop('checked', false);
-         // fixme - hide footer all together if we are not on a phone
-         //$('#index-page-footer').hide();
-     }
      
      // listen for the stop button on the earpiece popup
      $('#audiowand-play-through-earpiece div a').click(function(){
@@ -214,6 +228,8 @@ function resizeMapWindow(){
      });
      
  });
+ 
+ 
  
  function modeChanged(){
      
@@ -264,9 +280,54 @@ function resizeMapWindow(){
  });
  */
 
+/*
+ * 
+ */
 function toggleAudio(active_li){
     
     console.log('toggleAudio');
+    
+    
+    // if the audio mode is not set then we initialise
+    // it depending on whether AudioToggle is present
+    // this needs to happen here because AudioToggle isn't initialised
+    // during page create
+
+
+    if(typeof audiowand_mode == 'undefined'){
+    
+        console.log("audiowand_mode not set yet");
+    
+        if(typeof AudioToggle == 'undefined'){
+            
+            // we don't have access to AudioToggle so default to speaker.
+             console.log("AudioToggle NOT present or earpiece NOT available");
+             audiowand_mode = 'speaker';
+             $('#audiowand-mode-speaker').prop('checked', true).checkboxradio("refresh");
+             $('#audiowand-mode-earpiece').prop('checked', false).checkboxradio("refresh");
+            // fixme - hide footer all together if we are not on a phone
+            //$('#index-page-footer').hide();
+            
+         }else{
+            
+              // Looks like we are on a phone so default to earpiece
+              console.log("AudioToggle present");
+              audiowand_mode = 'earpiece';
+              $('#audiowand-mode-earpiece').prop('checked', true).checkboxradio("refresh");
+              $('#audiowand-mode-speaker').prop('checked', false).checkboxradio("refresh");
+              $('#index-page-footer').show();
+            
+         }
+    
+    }
+
+    
+    if(typeof AudioToggle == 'undefined'){
+        console.log('AudioToggle is undefined');
+    }else{
+        console.log('setting earpiece mode = ' + AudioToggle.setAudioMode(AudioToggle.EARPIECE));
+    }
+
     
     // if they have clicked on a active link then just stop everything.
     if(active_li.hasClass('stop-state')){
@@ -283,6 +344,7 @@ function toggleAudio(active_li){
 }
 
 function startAudio(active_li){
+   
     if(window.cordova){
         startAudioCordova(active_li);
     }else{
@@ -301,7 +363,7 @@ function startAudio(active_li){
          $('#audiowand-play-through-earpiece').popup('open');
     }
     
-     $('#audiowand-play-through-earpiece').popup('open');
+     //$('#audiowand-play-through-earpiece').popup('open');
 
 }
 
@@ -312,10 +374,17 @@ function startAudioCordova(active_li){
     console.log('Playing media from: ' + media_url);
     
     audiowand_media_player = new Media(media_url,
-        // success callback
-        function () { console.log("playAudio():Audio Success"); },
+        
+        // success callback -- called at the end of playback
+        function () {
+            audiowand_media_player.release();
+            stopAudio();
+            console.log("Cordova - finished playback");
+        },
+        
         // error callback
         function (err) {
+          audiowand_media_player.release();
           console.log("playAudio():Audio Error: " + err.message);
           if (err.code == MediaError.MEDIA_ERR_ABORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_ABORTED");
           if (err.code == MediaError.MEDIA_ERR_NETWORK) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NETWORK");
@@ -324,7 +393,11 @@ function startAudioCordova(active_li){
         }
     );
     
-    audiowand_media_player.play();
+    try{
+        audiowand_media_player.play();
+    }catch(err){
+        console.log(err);
+    }
     
 }
 
@@ -351,6 +424,7 @@ function stopAudio(){
     $('#audiowand-poi-list li').removeClass('stop-state');
     $('#audiowand-poi-list li').attr('data-icon', 'audio');
     $('#audiowand-poi-list li').find('a').removeClass('ui-icon-minus').addClass('ui-icon-audio');
+    $('#audiowand-play-through-earpiece').popup( "close" );
     
 
 }
@@ -359,7 +433,6 @@ function stopAudioCordova(){
      console.log('stopAudioCordova');
      if(audiowand_media_player){
          audiowand_media_player.stop();
-         audiowand_media_player = false;
      }
 }
 

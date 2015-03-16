@@ -52,33 +52,34 @@
                         <fieldset data-role="controlgroup" data-type="horizontal">
                             <input name="audiowand-mode-choice" id="audiowand-mode-speaker" value="speaker"  type="radio">
                             <label for="audiowand-mode-speaker">Speaker Mode</label>
-                            <input name="audiowand-mode-choice" id="audiowand-mode-earpiece" value="earpiece" checked="checked" type="radio">
+                            <input name="audiowand-mode-choice" id="audiowand-mode-earpiece" value="earpiece" type="radio">
                             <label for="audiowand-mode-earpiece">Earpiece Mode</label>
                         </fieldset>
                     </form>
-                    <div data-role="popup" id="audiowand-play-through-earpiece" class="ui-content" data-position-to="window"  data-theme="b" data-dismissible="false">
-                       <!-- <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a> -->
+                    <div data-role="popup" id="audiowand-play-through-earpiece" class="ui-content" data-position-to="#index-page-footer"  data-theme="b" data-dismissible="false">
                         <div>
                             <p>Hold the phone to your ear.</p>
                             <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-icon-minus ui-btn-icon-left ui-btn-a" data-rel="back" data-transition="flow">Stop</a>
                         </div>
                     </div>
-                    <div data-role="popup" id="audiowand-switch-to-earpiece" data-position-to="#index-page-footer"  data-theme="a">
-                        <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+                    
+                    <div data-role="popup" id="audiowand-switch-to-earpiece" data-position-to="window"  data-theme="a">
                         <div data-role="header" data-theme="a">
                             <h1>Earpiece Mode</h1>
                         </div>
                         <div class="ui-content">
                             <p>Audio will now come out of the phone's earpiece.</p>
+                            <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-icon-minus ui-btn-icon-left ui-btn-a" data-rel="back" data-transition="flow">OK</a>
                         </div>
                     </div>
+                    
                     <div data-role="popup" id="audiowand-switch-to-speaker" data-position-to="window"  data-theme="a">
-                        <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
                         <div data-role="header" data-theme="a">
                             <h1>Speaker Mode</h1>
                         </div>
                         <div class="ui-content">
                             <p>Audio will now come out of the speaker.</p>
+                            <a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-icon-minus ui-btn-icon-left ui-btn-a" data-rel="back" data-transition="flow">OK</a>
                         </div>
                     </div>
              </div>
@@ -128,7 +129,7 @@
     <div data-role="page" id="credits-page">
         <div data-role="header" data-position="fixed" >
             <h1>About</h1>
-            <a href="#about-page" data-transition="slide" data-icon="arrow-r" data-iconpos="right" class="ui-btn-right" >List</a>
+            <a href="#about-page" data-transition="slide" data-icon="arrow-r" data-iconpos="right" class="ui-btn-right" >About</a>
         </div><!-- /header -->
     
         <div data-role="content">	
