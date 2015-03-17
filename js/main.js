@@ -226,6 +226,14 @@ function resizeMapWindow(){
      if(!window.cordova){
           $('#audiowand-audio').bind('ended', stopAudio);
      }
+     
+     // swipe page change
+     $('#index-page').on('swipeleft', function(){
+         $( ":mobile-pagecontainer" ).pagecontainer( "change", "#map-page", {transition: 'slide'});
+     });
+     $('#index-page').on('swiperight', function(){
+         $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide', reverse: true});
+     });
     
  });
  
@@ -244,6 +252,14 @@ function resizeMapWindow(){
  
  $(document).on('pagecreate', '#about-page', function(e, data) {
       console.log('about to created about-page');
+      
+      $('#about-page').on('swipeleft', function(){
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index-page", {transition: 'slide'});
+      });
+      
+      $('#about-page').on('swiperight', function(){
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#credits-page", {transition: 'slide', reverse: true});
+      });
  });
  
  /*
@@ -260,6 +276,11 @@ function resizeMapWindow(){
  
  $(document).on('pagecreate', '#credits-page', function(e, data) {
       console.log('about to credits about-page');
+      
+      $('#credits-page').on('swipeleft', function(){
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide'});
+      });
+      
  });
  
 
