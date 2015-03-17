@@ -1,31 +1,47 @@
 
+Audiowand
+=========
+
+A very simple audio tour app built with Cordova
+
+n.b. This is early days - don't get excited!
+
+Setting up a Tour build environment
+===================================
+
+* Use Cordova CLI to build the app
+    https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
+* Create a Cordova application e.g.
+    cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses
+* Add the media plugin - the file plugin will be auto added
+    cordova plugin add org.apache.cordova.media
+* Clone a copy of audiowand into the application directory (not www)
+    git clone https://github.com/rogerhyam/audiowand
+* Copy the update_core.sh script from the cloned repository to your Cordova project directory and run it.
+    cp update_core.sh .
+    chmod +x update_core.sh
+    ./update_core.sh
+* (You can run the update_core script anytime you think the git repository might have changed)
+* Initialise your data directory with the test data from the core build you only want to do this once at the beginning!
+    cp -r audiowand/data/* www/data
+* Get a copy of the config.xml in the www and remove the Cordova one. We use one in the WWW to make it simpler with Phonegap 
+    rm config.xml
+    cp audiowand/config.xml www/config.xml
+* Build it e.g.
+    cordova build android
+* We are now free to change anything under www/data and the www/config.xml. Other files will be overwritten by update_core.sh
+    
+
 
 Cordova Plugins Required
 ========================
 org.apache.cordova.file 1.3.3 "File"
 org.apache.cordova.media 0.2.16 "Media"
-com.dooble.audiotoggle
-org.awokenwell.proximity
-
-https://build.phonegap.com/plugins/714
-
-
 
 Useful for Debug
 ================
 cd /Users/rogerhyam/android-sdks/platform-tools
 ./adb  logcat CordovaLog:D *:S
 
-
-Developing a Tour
-=================
-
-* Clone the github repository of the core into a directory somewhere
-    /path/to/core/clone
-* Use Cordova CLI to build the app
-* Create a Cordova application e.g.
-    cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses
-* Copy the update_core.sh script from the cloned repository to your Cordova project directory (not the WWW director but below it).
-* Edit the 
 
 
