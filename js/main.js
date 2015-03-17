@@ -270,19 +270,25 @@ function toggleAudio(active_li){
     
     // console.log('toggleAudio');
     
-
     // if they have clicked on a active link then just stop everything.
     if(active_li.hasClass('stop-state')){
         stopAudio();
         return;
     }
     
-    // the current one isn't the active one so kill any others that might be playing
-    stopAudio();
+    console.log($('#audiowand-audio').data('playing'));
     
-    // and start this one
-    startAudio(active_li);
-    
+    // the current one isn't the active one is another one active?
+    if($('#audiowand-audio').data('playing')){
+        console.log("going to wait before starting");
+        stopAudio();
+        // wait a half a mo for it to die before we start the new one
+        setTimeout(function(){startAudio(active_li)}, 500);
+    }else{
+        // and start this one
+        startAudio(active_li);
+    }
+
 }
 
 function startAudio(active_li){
