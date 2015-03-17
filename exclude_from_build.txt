@@ -1,4 +1,4 @@
 update_core.sh
 exclude_from_build.txt
-data
+data/*
 */README.md
