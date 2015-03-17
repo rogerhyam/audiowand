@@ -14,8 +14,9 @@
         <link rel="stylesheet" href="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
         
         <!-- Application CSS -->
-        <link rel="stylesheet" href="style/main.css" type="text/css" charset="utf-8">
-         
+        <link rel="stylesheet" href="style/main.css"  type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="data/custom.css" type="text/css" charset="utf-8">
+        
         <!-- Phone Gap -->
         <script type="text/javascript" src="cordova.js"></script>
         
@@ -53,13 +54,13 @@
         <div data-role="header" data-position="fixed" >
             <a href="#index-page" data-transition="slide" data-direction="reverse" data-icon="arrow-l" >List</a>
             <h1>List</h1>
-            <a data-transition="slide" data-icon="navigation" data-iconpos="right" >Navigate</a>
+            <a data-transition="slide" data-icon="navigation" data-iconpos="right" id="navigation-button" >Navigate</a>
         </div><!-- /header -->
     
         <div data-role="content" id="map-page-content">	
                <div id="map-window">
                    <div id="map-canvas">
-                       <img src="data/images/dawyck_map_1.5k.jpg" />
+                       <img /> <!-- source is loaded on page creation-->
                    </div>
                </div>
         </div>
@@ -82,7 +83,7 @@
             <a href="#index-page" data-transition="slide" data-icon="arrow-r" data-iconpos="right" class="ui-btn-right" >List</a>
         </div><!-- /header -->
         <div data-role="content">	
-                <h2>Native Trees</h2>
+                <!-- content loaded from data/index.html -->
         </div>
     </div>
     
@@ -94,8 +95,7 @@
         </div><!-- /header -->
     
         <div data-role="content">	
-                <h2>Credits</h2>
-                <p>We were the ones what done this!</p>
+                <!-- content loaded from data/credits.html -->
         </div>
     </div>
 

@@ -68,9 +68,19 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
  */
 $(document).on( "pagebeforecreate", "#map-page", function(event) {
    
+    // set the map image
+    $('#map-page div[id="map-page-content"] img').attr('src', audiowand_map.image);
+   
     // set the canvas to the same size as the full map
     $('#map-canvas').width(audiowand_map.image_width);
     $('#map-canvas').height(audiowand_map.image_height);
+   
+   // hide the navigation button if it is not on
+   if(!audiowand_map.navigation){
+       $('#navigation-button').hide();
+   }else{
+       $('#navigation-button').show();
+   }
    
     // draw the markers on 
     for (var i=0; i < audiowand_pois.length; i++) {
@@ -223,15 +233,35 @@ function resizeMapWindow(){
  /*
   *  A B O U T - P A G E 
   */
-  /*
+  
  $(document).on( "pagebeforecreate", "#about-page", function(event) {
     console.log('about to create about-page');
+ 
+    // load the content from the data directory
+    $( '#about-page div[data-role="content"]' ).load( "data/about.html" );
+ 
  });
  
  $(document).on('pagecreate', '#about-page', function(e, data) {
       console.log('about to created about-page');
  });
- */
+ 
+ /*
+  *  C R E D I T S - P A G E 
+  */
+  
+ $(document).on( "pagebeforecreate", "#credits-page", function(event) {
+    console.log('about to create credits-page');
+ 
+    // load the content from the data directory
+    $( '#credits-page div[data-role="content"]' ).load( "data/credits.html" );
+ 
+ });
+ 
+ $(document).on('pagecreate', '#credits-page', function(e, data) {
+      console.log('about to credits about-page');
+ });
+ 
 
 /*
  * 
