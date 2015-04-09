@@ -332,7 +332,13 @@ function startAudio(active_li){
 function startAudioCordova(active_li){
     console.log('startAudioCordova');
     
-    var media_url = cordova.file.applicationDirectory + 'www/' + active_li.data('audiowand-mp3');
+    //var media_url = cordova.file.applicationDirectory + 'www/' + active_li.data('audiowand-mp3');
+    
+    // Android - needs different URL
+    var media_url = active_li.data('audiowand-mp3');
+    if (device.platform == "Android") {
+        media_url = '/android_asset/www/' + media_url;
+    }
     console.log('Playing media from: ' + media_url);
     
     audiowand_media_player = new Media(media_url,

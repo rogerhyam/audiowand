@@ -11,6 +11,12 @@
     <access origin="*" />
     <preference name="orientation" value="portrait" />
     <preference name="fullscreen" value="true" />
+    
+    <!-- Status bar plugin parameters -->
+    <preference name="StatusBarOverlaysWebview" value="false" />
+    <preference name="StatusBarBackgroundColor" value="#000000" />
+    <preference name="StatusBarStyle" value="lightcontent" />
+    
   <!--
     <preference name="SplashScreen" value="splash" />
     <preference name="SplashScreenDelay" value="3000" />
