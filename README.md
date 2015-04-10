@@ -13,12 +13,18 @@ Setting up a Tour build environment
         https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
 * Create a Cordova application e.g.
         cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses
-* Add the media plugin - the file plugin will be auto added
+* Add the media plugin and others - the file plugin will be auto added
         cordova plugin add org.apache.cordova.media
+        cordova plugin add org.apache.cordova.device
+        cordova plugin add org.apache.cordova.splashscreen
+        cordova plugin add org.apache.cordova.statusbar
+* Add the platforms
+        cordova platform add ios
+        cordova platform add android
 * Clone a copy of audiowand into the application directory (not www)
         git clone https://github.com/rogerhyam/audiowand
 * Copy the update_core.sh script from the cloned repository to your Cordova project directory and run it.
-    cp update_core.sh .
+    cp audiowand/update_core.sh .
     chmod +x update_core.sh
     ./update_core.sh
 * (You can run the update_core script anytime you think the git repository might have changed)
@@ -41,12 +47,15 @@ org.apache.cordova.device 0.3.0 "Device"
 org.apache.cordova.splashscreen 1.0.0 "Splashscreen"
 org.apache.cordova.statusbar 0.1.10 "StatusBar"
 
-
-
 Useful for Debug
 ================
 cd /Users/rogerhyam/android-sdks/platform-tools
 ./adb  logcat CordovaLog:D *:S
 
+
+Creating Synthesised Voice on a Mac
+===================================
+ 
+say -v samantha -f sycamore.txt -r 135 -o sycamore.mp4
 
 
