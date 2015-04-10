@@ -1,5 +1,6 @@
 #!/bin/bash
 # this works on a mac for creating MP4 files from txt files as synthetic voice stuff for testing.
+cd ../../www/data/scripts
 for F in *.txt
 do
     N=`basename $F .txt`

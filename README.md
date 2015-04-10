@@ -55,7 +55,6 @@ cd /Users/rogerhyam/android-sdks/platform-tools
 
 Creating Synthesised Voice on a Mac
 ===================================
- 
-say -v samantha -f sycamore.txt -r 135 -o sycamore.mp4
+There is a directory in www/data/script that can be used for managing the audio scripts. There is a bash script in there for generating synthetic voice for testing on a mac.
 
 

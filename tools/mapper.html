@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title>Simple Mapper</title>
+    <script src="../../www/data/map.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        
+        function loadMap(){
+            var img = document.getElementById("map_image");
+            console.log(img);
+            img.src = '../../www/' + audiowand_map.image;
+        }
+        
+        function showLocation(event){
+            console.log(event);
+            
+            var marker = {
+                "top": event.clientY,
+                "left": event.clientX,
+            }
+            
+            prompt('Marker', JSON.stringify(marker));
+        }
+    
+    </script>
+</head>
+<body onload="loadMap()">
+    <img id="map_image" src="" onclick="showLocation(event);">
+</body>
+</html>
