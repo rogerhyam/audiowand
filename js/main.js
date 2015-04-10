@@ -83,12 +83,15 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
    }
    
     // draw the markers on 
+    var display_number = 1;
     for (var i=0; i < audiowand_pois.length; i++) {
         
         var poi = audiowand_pois[i];
         if (typeof poi.marker == 'undefined') continue;
         
-        var div = $('<div>'+ (i+1) +'</div>');
+        var div = $('<div>'+ display_number +'</div>');
+        display_number++;
+        
         div.addClass('map-marker');
         //div.addClass('ui-btn-icon-notext');
         //div.addClass('ui-icon-location');
@@ -189,6 +192,7 @@ function resizeMapWindow(){
     console.log('about to creat index-page');
     
     var poi_list = $('#audiowand-poi-list');
+    var display_number = 1;
     for (var i=0; i < audiowand_pois.length; i++) {
         
         var poi = audiowand_pois[i];
@@ -210,7 +214,12 @@ function resizeMapWindow(){
         img.attr('src', 'data/' + poi.image);
         a.append(img);
         
-        var h2 = $('<h2>'+ (i+1) + ". " + poi.title   +'</h2>');
+        if (typeof poi.marker == 'undefined'){
+            var h2 = $('<h2>'+ poi.title   +'</h2>');
+        }else{
+            var h2 = $('<h2>'+ display_number + ". " + poi.title   +'</h2>');
+            display_number++;
+        }
         a.append(h2);
         
         var p = $('<p>'+ poi.subtitle   +'</p>');
