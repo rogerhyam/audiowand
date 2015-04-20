@@ -58,4 +58,13 @@ Creating Synthesised Voice on a Mac
 ===================================
 There is a directory in www/data/script that can be used for managing the audio scripts. There is a bash script in there for generating synthetic voice for testing on a mac.
 
+Voice Synthesis on Ubuntu
+==========================
+
+bash file containing:
+pico2wave -l=en-GB -w lookdave.wav "$1"
+./lookdave.sh "$(cat lookdave.txt)"
+
+
+
 
