@@ -119,6 +119,9 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
         $('#map-canvas').prepend(div);
         
     };
+    
+    // flag the fact that this map hasn't been viewed
+    audiowand_map.map_viewed = false;
    
 });
 
@@ -153,7 +156,8 @@ function updateMapSize(){
    
    // set the new width
    $('#map-window img').width(new_width);
-    //console.log($('#slider-zoom')[0].value);
+   //console.log($('#slider-zoom')[0].value);
+
 }
 
 function resizeMapWindow(){
@@ -172,17 +176,35 @@ function resizeMapWindow(){
         $('#slider-zoom').attr('min', audiowand_map.image_width * ($('#map-window').height()/audiowand_map.image_height) );
     }
     $('#slider-zoom').attr('max', audiowand_map.image_width);
+
+    // if we haven't seen the map before we initialise it
+    if(!audiowand_map.map_viewed){
+ 
+        // set the slider position for start
+        var max = $('#slider-zoom').attr('max');
+        var min = $('#slider-zoom').attr('min');
+        var dif = max - min;
+        var middle = parseInt(min) + parseInt(dif/2);
+        $('#slider-zoom').val(min);
+        $('#slider-zoom').slider('refresh');
+        
+        // centre the map
+        var map_centre = $('#map-canvas').width() / 2;
+        var window_centre = $('#map-window').width() / 2;
+        var left_offset = map_centre - window_centre;
+        $('#map-window').scrollLeft( left_offset );
+        var map_middle = $('#map-canvas').width() / 2;
+        var window_middle = $('#map-window').width() / 2;
+        var top_offset = map_middle - window_middle;
+        $('#map-window').scrollTop( left_offset );
+        
+        // flag that we have seen this
+        audiowand_map.map_viewed = true;
     
-    
-    // set the slider position for start
-    var max = $('#slider-zoom').attr('max');
-    var min = $('#slider-zoom').attr('min');
-    var dif = max - min;
-    var middle = parseInt(min) + parseInt(dif/2);
-    $('#slider-zoom').val(middle);
-    $('#slider-zoom').slider('refresh');
+    }
     
 }
+
 
 /*
  *  I N D E X - P A G E 
@@ -227,6 +249,8 @@ function resizeMapWindow(){
              
     };
     
+    $('#index-page div[data-role="footer"]').hide();
+    
  });
  
  $(document).on('pagecreate', '#index-page', function(e, data) {
@@ -243,6 +267,11 @@ function resizeMapWindow(){
      $('#index-page').on('swiperight', function(){
          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide', reverse: true});
      });
+     
+     // wire up the buttons to stop and pause
+     $('#audio-stop-button').bind('click', stopAudio);
+     $('#audio-pause-button').bind('click', pauseAudio);
+     $('#audio-restart-button').bind('click', restartAudio);
     
  });
  
@@ -336,6 +365,8 @@ function startAudio(active_li){
     active_li.attr('data-icon', 'minus');
     active_li.find('a').removeClass('ui-icon-audio').addClass('ui-icon-minus');
     
+    $('#index-page div[data-role="footer"]').slideDown();
+    
 }
 
 function startAudioCordova(active_li){
@@ -401,6 +432,11 @@ function stopAudio(){
     $('#audiowand-poi-list li').removeClass('stop-state');
     $('#audiowand-poi-list li').attr('data-icon', 'audio');
     $('#audiowand-poi-list li').find('a').removeClass('ui-icon-minus').addClass('ui-icon-audio');
+    $('#index-page div[data-role="footer"]').slideUp("slow", function(){
+        $('#audio-stop-button').removeClass('ui-btn-active');
+        $('#audio-restart-button').removeClass('ui-btn-active');
+    });
+    
 
 }
 
@@ -416,4 +452,32 @@ function stopAudioBrowser(){
      $('#audiowand-audio')[0].pause();
 }
 
+function restartAudio(){
+    var active_li = $('#audiowand-poi-list li.stop-state');
+    stopAudio();
+    $('#audio-restart-button').removeClass('ui-btn-active');
+    // wait a half a mo for it to die before we start the new one
+    setTimeout(function(){startAudio(active_li)}, 500);
+}
 
+function pauseAudio(){
+    if(window.cordova){
+        pauseAudioCordova();
+    }else{
+        pauseAudioBrowser();
+    }
+}
+
+function pauseAudioBrowser(){
+    if($('#audiowand-audio')[0].paused){
+        $('#audiowand-audio')[0].play();
+        $('#audio-pause-button').removeClass('ui-btn-active');
+    }else{
+        $('#audiowand-audio')[0].pause();
+        $('#audio-pause-button').addClass('ui-btn-active');
+    }
+}
+
+function pauseAudioCordova(){
+    
+}

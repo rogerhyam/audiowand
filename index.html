@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="manifest.appcache" > 
+<html> 
     <head> 
         <title>Mobile Guide</title> 
         
@@ -11,7 +11,12 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
        
         <!-- Jquery Style -->
-        <link rel="stylesheet" href="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<!--        <link rel="stylesheet" href="js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css" type="text/css" media="screen" title="no title" charset="utf-8"> -->
+        
+        <link rel="stylesheet" href="style/themes/polyclave.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="style/themes/jquery.mobile.icons.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="js/jquery.mobile-1.4.5/jquery.mobile.structure-1.4.5.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        
         
         <!-- Application CSS -->
         <link rel="stylesheet" href="style/main.css"  type="text/css" charset="utf-8">
@@ -36,28 +41,38 @@
     <audio id="audiowand-audio" ></audio>
         
     <!--  H O M E - P A G E  -->
-    <div data-role="page" id="index-page">
+    <div data-role="page" id="index-page" data-theme="b" >
         <div data-role="header" data-position="fixed" >
             <a href="#about-page" data-transition="slide" data-direction="reverse" data-icon="arrow-l" >About</a>
             <h1>List</h1>
             <a href="#map-page" data-transition="slide" data-icon="arrow-r" data-iconpos="right" >Map</a>
         </div><!-- /header -->
     
-        <div data-role="content">	
+        <div data-role="content" data-theme="c">	
                <ul data-role="listview" id="audiowand-poi-list" data-inset="false"></ul>
+        </div>
+        
+        <div data-role="footer" data-position="fixed" data-theme="b" >
+            <div data-role="navbar" data-iconpos="bottom">
+                <ul>
+                    <li><a href="#" id="audio-restart-button" data-icon="carat-l">Restart</a></li>
+                    <li><a href="#" id="audio-pause-button" data-icon="clock">Pause</a></li>
+                    <li><a href="#" id="audio-stop-button" data-icon="minus">Stop</a></li>
+                </ul>
+            </div><!-- /navbar -->
         </div>
         
     </div>
 
     <!--  M A P - P A G E  -->
-    <div data-role="page" id="map-page">
+    <div data-role="page" id="map-page" data-theme="b" >
         <div data-role="header" data-position="fixed" >
             <a href="#index-page" data-transition="slide" data-direction="reverse" data-icon="arrow-l" >List</a>
             <h1>List</h1>
             <a data-transition="slide" data-icon="navigation" data-iconpos="right" id="navigation-button" >Navigate</a>
         </div><!-- /header -->
     
-        <div data-role="content" id="map-page-content">	
+        <div data-role="content" id="map-page-content" data-theme="c" >	
                <div id="map-window">
                    <div id="map-canvas">
                        <img /> <!-- source is loaded on page creation-->
@@ -65,10 +80,10 @@
                </div>
         </div>
         
-        <div data-role="footer" data-position="fixed" >
-            <div class="ui-bar">
+        <div data-role="footer" data-position="fixed" data-theme="c" >
+            <div class="ui-bar" >
                 <form class="full-width-slider">
-                    <input name="slider-zoom" id="slider-zoom" min="0" max="100" value="50" type="range">
+                    <input name="slider-zoom" id="slider-zoom" min="0" max="100" value="50" type="range" data-highlight="true">
                 </form>
             </div>
         </div>
@@ -76,25 +91,25 @@
     
 
     <!--  A B O U T - P A G E  -->
-    <div data-role="page" id="about-page">
+    <div data-role="page" id="about-page" data-theme="b" >
         <div data-role="header" data-position="fixed" >
             <a href="#credits-page" data-transition="slide" data-direction="reverse" data-icon="arrow-l" >Credits</a>
             <h1>About</h1>
             <a href="#index-page" data-transition="slide" data-icon="arrow-r" data-iconpos="right" class="ui-btn-right" >List</a>
         </div><!-- /header -->
-        <div data-role="content">	
+        <div data-role="content" data-theme="c" >
                 <!-- content loaded from data/index.html -->
         </div>
     </div>
     
     <!--  C R E D I T S - P A G E  -->
-    <div data-role="page" id="credits-page">
+    <div data-role="page" id="credits-page" data-theme="b" >
         <div data-role="header" data-position="fixed" >
             <h1>Credits</h1>
             <a href="#about-page" data-transition="slide" data-icon="arrow-r" data-iconpos="right" class="ui-btn-right" >About</a>
         </div><!-- /header -->
     
-        <div data-role="content">	
+        <div data-role="content" data-theme="c" >
                 <!-- content loaded from data/credits.html -->
         </div>
     </div>

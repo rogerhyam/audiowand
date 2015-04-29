@@ -70,3 +70,7 @@ ul#audiowand-poi-list li.stop-state a:after {
     background-color: red;
 }
 
+/* tweak the theme */
+.ui-btn-icon-left:after, .ui-btn-icon-right:after, .ui-btn-icon-top:after, .ui-btn-icon-bottom:after, .ui-btn-icon-notext:after{
+  background-color: #6a734e;
+}
