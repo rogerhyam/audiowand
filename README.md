@@ -37,8 +37,6 @@ Setting up a Tour build environment
 * Build it e.g.
     cordova build android
 * We are now free to change anything under www/data and the www/config.xml. Other files will be overwritten by update_core.sh
-    
-
 
 Cordova Plugins Required
 ========================

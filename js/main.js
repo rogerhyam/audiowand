@@ -1,5 +1,6 @@
 
 var audiowand_media_player;
+var audiowand_media_player_status;
 var audiowand_play_next = -1;
 
 // This is called when moving between pages first with the
@@ -381,31 +382,49 @@ function startAudioCordova(active_li){
     }
     console.log('Playing media from: ' + media_url);
     
-    audiowand_media_player = new Media(media_url,
-        
-        // success callback -- called at the end of playback
-        function () {
-            audiowand_media_player.release();
-            stopAudio();
-            console.log("Cordova - finished playback");
-        },
-        
-        // error callback
-        function (err) {
-          audiowand_media_player.release();
-          console.log("playAudio():Audio Error: " + err.message);
-          if (err.code == MediaError.MEDIA_ERR_ABORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_ABORTED");
-          if (err.code == MediaError.MEDIA_ERR_NETWORK) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NETWORK");
-          if (err.code == MediaError.MEDIA_ERR_DECODE) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_DECODE");
-          if (err.code == MediaError.MEDIA_ERR_NONE_SUPPORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NONE_SUPPORTED");
-        }
-    );
+    // we need to be careful not to create an extra media player
+    // if it is undefined or false then go for it
+   if (typeof audiowand_media_player == 'undefined' || audiowand_media_player == false){
+       
+       audiowand_media_player = new Media(media_url,
+
+           // success callback -- called at the end of playback
+           function () {
+               audiowand_media_player.release();
+               stopAudio();
+               console.log("Cordova - finished playback");
+               audiowand_media_player = false;
+           },
+
+           // error callback
+           function (err) {
+             audiowand_media_player.release();
+             console.log("playAudio():Audio Error: " + err.message);
+             if (err.code == MediaError.MEDIA_ERR_ABORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_ABORTED");
+             if (err.code == MediaError.MEDIA_ERR_NETWORK) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NETWORK");
+             if (err.code == MediaError.MEDIA_ERR_DECODE) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_DECODE");
+             if (err.code == MediaError.MEDIA_ERR_NONE_SUPPORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NONE_SUPPORTED");
+             audiowand_media_player = false;
+           },
+           
+           // status callback
+           function (status){
+               audiowand_media_player_status = status;
+               console.log('Media status = ' + audiowand_media_player_status);
+           }
+           
+       );
+       
+       try{
+           audiowand_media_player.play();
+       }catch(err){
+           console.log(err);
+           audiowand_media_player = false;
+       }
+       
+   } // check it doesn't already exist
     
-    try{
-        audiowand_media_player.play();
-    }catch(err){
-        console.log(err);
-    }
+    
     
 }
 
@@ -479,5 +498,15 @@ function pauseAudioBrowser(){
 }
 
 function pauseAudioCordova(){
+    
+    if (audiowand_media_player){
+        if(audiowand_media_player_status == Media.MEDIA_RUNNING){
+            audiowand_media_player.pause();
+            $('#audio-pause-button').addClass('ui-btn-active');
+        }else{
+            audiowand_media_player.play();
+            $('#audio-pause-button').removeClass('ui-btn-active');
+        }
+    }
     
 }
