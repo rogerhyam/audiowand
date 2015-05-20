@@ -1,3 +1,7 @@
+var audiowand_config = {
+    "display_numbers_in_list" : false,
+};
+
 var audiowand_pois = [
     
     {

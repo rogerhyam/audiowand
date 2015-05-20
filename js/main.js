@@ -237,7 +237,7 @@ function resizeMapWindow(){
         img.attr('src', 'data/' + poi.image);
         a.append(img);
         
-        if (typeof poi.marker == 'undefined'){
+        if ( !audiowand_config.display_numbers_in_list  || typeof poi.marker == 'undefined' ){
             var h2 = $('<h2>'+ poi.title   +'</h2>');
         }else{
             var h2 = $('<h2>'+ display_number + ". " + poi.title   +'</h2>');
