@@ -83,6 +83,9 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
        $('#navigation-button').show();
    }
    
+   // hide the location marker when we start
+   $('#navigation-location').hide();
+   
     // draw the markers on 
     var display_number = 1;
     for (var i=0; i < audiowand_pois.length; i++) {
@@ -131,6 +134,16 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
      $(window).resize(function(e){
           resizeMapWindow();
      });
+     
+     // listen for clicking on the navigation button.
+     $('#navigation-button').on('click', function(){
+         
+         $('#navigation-location').css('top', '50%');
+         $('#navigation-location').css('left', '50%');
+         
+         $('#navigation-location').show();
+     });
+     
 
     // listen to the scroll bar
     $('#slider-zoom').change(updateMapSize);
