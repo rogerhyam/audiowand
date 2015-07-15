@@ -68,7 +68,7 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
  *  M A P - P A G E 
  */
 $(document).on( "pagebeforecreate", "#map-page", function(event) {
-   
+       
     // set the map image
     $('#map-page div[id="map-page-content"] img').attr('src', audiowand_map.image);
    
@@ -144,6 +144,12 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
          $('#navigation-location').show();
      });
      
+
+     // decorate the slider handle
+     $('#map-page div.ui-slider-track').prepend('<div class="slider-label"><div class="slider-label-minus">-</div>Zoom<div class="slider-label-plus">+</div></div>');
+     
+     console.log($('#map-page a.ui-slider-handle'));
+
 
     // listen to the scroll bar
     $('#slider-zoom').change(updateMapSize);
