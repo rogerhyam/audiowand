@@ -74,8 +74,8 @@
         <div data-role="content" id="map-page-content" data-theme="c" >	
                <div id="map-window">
                    <div id="map-canvas">
-                       <img /> <!-- source is loaded on page creation-->
                        <div id="navigation-location">+</div>
+                       <img /> <!-- source is loaded on page creation-->
                    </div>
                </div>
         </div>
@@ -87,6 +87,15 @@
                 </form>
             </div>
         </div>
+        
+        <div data-role="popup" id="map-no-location-popup" data-dismissible="false" data-theme="a" class="ui-content ui-corner-all">
+            <h3>No Location</h3>
+            <p>
+                Sorry. Unable to obtain your location via GPS.
+           </p>
+            <a href="#" class="ui-btn ui-corner-all ui-shadow" data-rel="back">OK</a>
+        </div>
+        
     </div>
     
 

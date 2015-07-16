@@ -138,10 +138,69 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
      // listen for clicking on the navigation button.
      $('#navigation-button').on('click', function(){
          
-         $('#navigation-location').css('top', '50%');
-         $('#navigation-location').css('left', '50%');
+         // give them a hold message while we fetch the location
+         $.mobile.loading( "show", {
+            text: 'Fetching',
+            textVisible: true,
+            textonly: false,
+            html: ""
+         });
          
-         $('#navigation-location').show();
+         // go get the location
+         navigator.geolocation.getCurrentPosition(
+        
+             // success
+             function(position){
+                 $.mobile.loading( "hide" );
+                 console.log(position);
+                 
+                 // fixme - check accuracy is sufficient and warn if not
+                 
+                 // convert lon/lat to top/left
+                 var px = convertCoordinates(position.coords);
+
+                 
+                 // allow for size of marker
+                // px.top = px.top - ( $('#navigation-location').height() / 2 );
+                // px.left = px.left - ( $('#navigation-location').width() / 2 );
+                 
+                 console.log(px.top);
+                 console.log(px.left);
+
+                 
+                 // convert to percentage      
+                 var top = (px.top / audiowand_map.image_height) * 100;
+                 var left = (px.left / audiowand_map.image_width) * 100;
+                 
+                 console.log(top);
+                 console.log(left);
+                 
+             
+                 $('#navigation-location').css('top', top + "%");
+                 $('#navigation-location').css('left', left + "%");
+                 $('#navigation-location').show();
+                 animateNavigationLocationBorder();
+                 
+                 // fixme - centre map on position
+                 
+                 // turn it off after 30 seconds
+                 setTimeout(function(){
+                     $('#navigation-location').hide();
+                 }, 1000 * 20);
+             
+             },
+        
+             // failure
+             function(error){
+                 $.mobile.loading( "hide" );
+                 $('#map-no-location-popup').popup('open');
+                 $('#navigation-location').hide();
+
+             }
+        
+        );
+         
+    
      });
      
 
@@ -155,6 +214,121 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
     $('#slider-zoom').change(updateMapSize);
 
 });
+
+function animateNavigationLocationBorder(){
+    
+    var size = 1;
+    
+    if($('#navigation-location').is(":visible")){
+       
+        $('#navigation-location').animate({
+                'opacity': '0.1 ',
+        }, 1000);
+
+        $('#navigation-location').animate({
+                'opacity': '0.8',
+        }, 1000, "swing", animateNavigationLocationBorder);
+       
+    }
+    
+}
+
+function convertCoordinates(coords){
+        
+    // find the distance to all the geolocation reference points
+    var pos = {'x': coords.longitude, 'y': coords.latitude };
+    for(var i = 0; i < audiowand_map.geolocations.length; i++){
+        var geo = audiowand_map.geolocations[i];
+        geo.distance_degrees = getEuclideanDistance(pos, {'x': geo.longitude, 'y': geo.latitude }, true);
+    }    
+    console.log(audiowand_map.geolocations);
+
+    // sort the geolocations by distance from current coords
+    audiowand_map.geolocations.sort(function(a,b){
+        if (a.distance_degrees < b.distance_degrees) return -1;
+         if (a.distance_degrees > b.distance_degrees) return 1;
+         return 0;
+    });
+    
+    // a, b & c are the closest three geolocations to our coordinate - we work with these
+    var a = audiowand_map.geolocations[0];
+    var b = audiowand_map.geolocations[1];
+    var c = audiowand_map.geolocations[2];
+    
+    // calculate the local pixel pitch - or scale in px/degree based on the closest two points
+    var ab_pixels = getEuclideanDistance({'x': a.left, 'y': a.top }, {'x': b.left, 'y': b.top });
+    var ab_degrees = getEuclideanDistance({'x': a.longitude, 'y': a.latitude }, {'x': b.longitude, 'y': b.latitude }, true);
+    var scale = ab_pixels / ab_degrees;
+
+    // distance we are from each of the three nearest points in pixels
+    a.distance_pixels = a.distance_degrees * scale;
+    b.distance_pixels = b.distance_degrees * scale;
+    c.distance_pixels = c.distance_degrees * scale;
+
+    // Take the closest point and rotate around it at the scaled distance looking for candidate locations
+    // from 0 to half a radian - 90 degrees then do the other four quarters
+    var candidates = [];
+    for(var i = 0; i <= 0.5; i = i + 0.05){
+        
+        // use sine rule to calculate x_offset
+        var x_offset = Math.round(a.distance_pixels * Math.sin(Math.PI * i));
+        
+        // use pythagoras to get the y offset 
+        var y_offset = Math.round(Math.sqrt( (a.distance_pixels * a.distance_pixels) - (x_offset * x_offset) ));
+        
+        console.log("x_offset = "  +  x_offset);
+        console.log("y_offset = "  +  y_offset);
+        
+        // This gives us one of four locations around the circle so we create the others too
+        candidates.push( {'left': a.left + x_offset, 'top': a.top + y_offset } );
+        candidates.push( {'left': a.left - x_offset, 'top': a.top + y_offset } );
+        candidates.push( {'left': a.left + x_offset, 'top': a.top - y_offset } );
+        candidates.push( {'left': a.left - x_offset, 'top': a.top - y_offset } );
+    
+    }
+    
+    //console.log(candidates);
+    
+    // work through the candidates 
+    // find the distance in pixels on the image and compare it with the distance in pixels calculated from the lat/lon
+    // sum the error of the two
+    for(var i = 0; i < candidates.length; i++){
+        var x = candidates[i];
+        var xb = getEuclideanDistance({'x': x.left, 'y': x.top },{'x': b.left, 'y': b.top });
+        xb = Math.abs(xb - b.distance_pixels );
+        var xc = getEuclideanDistance({'x': x.left, 'y': x.top },{'x': c.left, 'y': c.top });
+        xc = Math.abs(xc - c.distance_pixels );
+        x.distance_error_pixels = xb + xc;
+    }
+    
+    console.log(candidates);
+    
+    candidates.sort(function(a,b){
+        if (a.distance_error_pixels < b.distance_error_pixels) return -1;
+         if (a.distance_error_pixels > b.distance_error_pixels) return 1;
+         return 0;
+    });
+    
+    console.log(candidates);
+    
+    // top candidate is returned
+    return candidates[0];
+    
+}
+
+function getEuclideanDistance(a, b, normalise_latitude){
+    var x = a.x - b.x;
+    var y = a.y - b.y
+    
+    // the further from the equator the finer pitch
+    // latitude is so we need to normalise it
+    if(normalise_latitude){
+        console.log('normalising latitude distance from :' + y );
+        y = y * (y/90);
+        console.log('normalised latitude distance to :' +  y);
+    }
+    return Math.sqrt( (x * x) + (y * y) ); // pythagorus
+}
 
 function updateMapSize(){
    // var new_width = audiowand_map.image_width * ( / 100);
