@@ -33,8 +33,6 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
                 
                 var li = $("#audiowand-poi-list li:nth-child(" + (audiowand_play_next+1) + ")");
                 
-                console.log("going to scroll");
-
                 // scroll it into view then call play on it
                 // this stops the warning box being scrolled of the page.
                 $('html, body').animate({
@@ -42,8 +40,6 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
                     400,
                     'swing',
                     function(){
-                        console.log("animation over");
-                        console.log(li);
                         if(audiowand_play_next > -1){
                             audiowand_play_next = -1;
                             toggleAudio(li);
@@ -153,8 +149,6 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
              function(position){
                  $.mobile.loading( "hide" );
                  
-                 console.log(position);
-                 
                  // convert lon/lat to top/left
                  var px = convertCoordinates(position.coords);
 
@@ -167,7 +161,7 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
                  }
                  
                  // check accuracy is sufficient and warn if not
-                 if(position.coords.accuracy > 100){
+                 if(position.coords.accuracy > 200){
                     $.mobile.loading( "hide" );
                     $('#map-vague-location-popup span.location-accuracy').html(position.coords.accuracy);
                     $('#map-vague-location-popup').popup('open');
@@ -214,9 +208,6 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
      // decorate the slider handle
      $('#map-page div.ui-slider-track').prepend('<div class="slider-label"><div class="slider-label-minus">-</div>Zoom<div class="slider-label-plus">+</div></div>');
      
-     console.log($('#map-page a.ui-slider-handle'));
-
-
     // listen to the scroll bar
     $('#slider-zoom').change(updateMapSize);
 
@@ -248,8 +239,7 @@ function convertCoordinates(coords){
         var geo = audiowand_map.geolocations[i];
         geo.distance_degrees = getEuclideanDistance(pos, {'x': geo.longitude, 'y': geo.latitude }, true);
     }    
-    console.log(audiowand_map.geolocations);
-
+    
     // sort the geolocations by distance from current coords
     audiowand_map.geolocations.sort(function(a,b){
         if (a.distance_degrees < b.distance_degrees) return -1;
@@ -291,8 +281,6 @@ function convertCoordinates(coords){
     
     }
     
-    //console.log(candidates);
-    
     // work through the candidates 
     // find the distance in pixels on the image and compare it with the distance in pixels calculated from the lat/lon
     // sum the error of the two
@@ -305,15 +293,11 @@ function convertCoordinates(coords){
         x.distance_error_pixels = xb + xc;
     }
     
-    console.log(candidates);
-    
     candidates.sort(function(a,b){
         if (a.distance_error_pixels < b.distance_error_pixels) return -1;
          if (a.distance_error_pixels > b.distance_error_pixels) return 1;
          return 0;
     });
-    
-    console.log(candidates);
     
     // top candidate is returned
     return candidates[0];
@@ -327,9 +311,7 @@ function getEuclideanDistance(a, b, normalise_latitude){
     // the further from the equator the finer pitch
     // latitude is so we need to normalise it
     if(normalise_latitude){
-        console.log('normalising latitude distance from :' + y );
         y = y * (y/90);
-        console.log('normalised latitude distance to :' +  y);
     }
     return Math.sqrt( (x * x) + (y * y) ); // pythagorus
 }
@@ -354,7 +336,6 @@ function updateMapSize(){
    
    // set the new width
    $('#map-window img').width(new_width);
-   //console.log($('#slider-zoom')[0].value);
 
 }
 
@@ -409,7 +390,6 @@ function resizeMapWindow(){
  */
  
  $(document).on( "pagebeforecreate", "#index-page", function(event) {
-    console.log('about to creat index-page');
     
     var poi_list = $('#audiowand-poi-list');
     var display_number = 1;
@@ -479,7 +459,6 @@ function resizeMapWindow(){
   */
   
  $(document).on( "pagebeforecreate", "#about-page", function(event) {
-    console.log('about to create about-page');
  
     // load the content from the data directory
     $( '#about-page div[data-role="content"]' ).load( "data/about.html" );
@@ -487,7 +466,6 @@ function resizeMapWindow(){
  });
  
  $(document).on('pagecreate', '#about-page', function(e, data) {
-      console.log('about to created about-page');
       
       $('#about-page').on('swipeleft', function(){
           $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index-page", {transition: 'slide'});
@@ -503,7 +481,6 @@ function resizeMapWindow(){
   */
   
  $(document).on( "pagebeforecreate", "#credits-page", function(event) {
-    console.log('about to create credits-page');
  
     // load the content from the data directory
     $( '#credits-page div[data-role="content"]' ).load( "data/credits.html" );
@@ -511,7 +488,6 @@ function resizeMapWindow(){
  });
  
  $(document).on('pagecreate', '#credits-page', function(e, data) {
-      console.log('about to credits about-page');
       
       $('#credits-page').on('swipeleft', function(){
           $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide'});
@@ -525,19 +501,14 @@ function resizeMapWindow(){
  */
 function toggleAudio(active_li){
     
-    // console.log('toggleAudio');
-    
     // if they have clicked on a active link then just stop everything.
     if(active_li.hasClass('stop-state')){
         stopAudio();
         return;
     }
     
-    console.log($('#audiowand-audio').data('playing'));
-    
     // the current one isn't the active one is another one active?
     if($('#audiowand-audio').data('playing')){
-        console.log("going to wait before starting");
         stopAudio();
         // wait a half a mo for it to die before we start the new one
         setTimeout(function(){startAudio(active_li)}, 500);
@@ -568,7 +539,6 @@ function startAudio(active_li){
 }
 
 function startAudioCordova(active_li){
-    console.log('startAudioCordova');
     
     //var media_url = cordova.file.applicationDirectory + 'www/' + active_li.data('audiowand-mp3');
     
@@ -577,7 +547,6 @@ function startAudioCordova(active_li){
     if (device.platform == "Android") {
         media_url = '/android_asset/www/' + media_url;
     }
-    console.log('Playing media from: ' + media_url);
     
     // we need to be careful not to create an extra media player
     // if it is undefined or false then go for it
@@ -589,14 +558,12 @@ function startAudioCordova(active_li){
            function () {
                audiowand_media_player.release();
                stopAudio();
-               console.log("Cordova - finished playback");
                audiowand_media_player = false;
            },
 
            // error callback
            function (err) {
              audiowand_media_player.release();
-             console.log("playAudio():Audio Error: " + err.message);
              if (err.code == MediaError.MEDIA_ERR_ABORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_ABORTED");
              if (err.code == MediaError.MEDIA_ERR_NETWORK) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NETWORK");
              if (err.code == MediaError.MEDIA_ERR_DECODE) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_DECODE");
@@ -607,7 +574,6 @@ function startAudioCordova(active_li){
            // status callback
            function (status){
                audiowand_media_player_status = status;
-               console.log('Media status = ' + audiowand_media_player_status);
            }
            
        );
@@ -615,7 +581,6 @@ function startAudioCordova(active_li){
        try{
            audiowand_media_player.play();
        }catch(err){
-           console.log(err);
            audiowand_media_player = false;
        }
        
@@ -632,7 +597,6 @@ function startAudioBrowser(active_li){
 
 
 function stopAudio(){
-    console.log('stopAudio');
     
     // actually stop the audio
     if(window.cordova){
@@ -657,14 +621,12 @@ function stopAudio(){
 }
 
 function stopAudioCordova(){
-     console.log('stopAudioCordova');
      if(audiowand_media_player){
          audiowand_media_player.stop();
      }
 }
 
 function stopAudioBrowser(){
-     console.log('stopAudioBrowser');
      $('#audiowand-audio')[0].pause();
 }
 
