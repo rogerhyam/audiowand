@@ -152,41 +152,48 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
              // success
              function(position){
                  $.mobile.loading( "hide" );
-                 console.log(position);
                  
-                 // fixme - check accuracy is sufficient and warn if not
+                 console.log(position);
                  
                  // convert lon/lat to top/left
                  var px = convertCoordinates(position.coords);
 
+                 // check they actually fall on the map
+                 if(px.top < 0 || px.top > audiowand_map.image_height || px.left < 0 || px.left > audiowand_map.image_width){
+                     $.mobile.loading( "hide" );
+                     $('#map-off-map-popup').popup('open');
+                     $('#navigation-location').hide();
+                     return;
+                 }
                  
-                 // allow for size of marker
-                // px.top = px.top - ( $('#navigation-location').height() / 2 );
-                // px.left = px.left - ( $('#navigation-location').width() / 2 );
-                 
-                 console.log(px.top);
-                 console.log(px.left);
-
+                 // check accuracy is sufficient and warn if not
+                 if(position.coords.accuracy > 100){
+                    $.mobile.loading( "hide" );
+                    $('#map-vague-location-popup span.location-accuracy').html(position.coords.accuracy);
+                    $('#map-vague-location-popup').popup('open');
+                    $('#navigation-location').hide();
+                    return;
+                 }
                  
                  // convert to percentage      
                  var top = (px.top / audiowand_map.image_height) * 100;
                  var left = (px.left / audiowand_map.image_width) * 100;
-                 
-                 console.log(top);
-                 console.log(left);
-                 
-             
+                
+                 // draw it
                  $('#navigation-location').css('top', top + "%");
                  $('#navigation-location').css('left', left + "%");
                  $('#navigation-location').show();
                  animateNavigationLocationBorder();
                  
-                 // fixme - centre map on position
-                 
-                 // turn it off after 30 seconds
+                 //centre map on position
+                 var scroll_left = px.left - ($('#map-window').width() / 2);
+                 var scroll_top = px.top - ($('#map-window').height() / 2);
+                 $('#map-window').animate({scrollLeft: scroll_left, scrollTop: scroll_top}, 'slow');
+                                  
+                 // turn it off after 40 seconds
                  setTimeout(function(){
                      $('#navigation-location').hide();
-                 }, 1000 * 20);
+                 }, 1000 * 40);
              
              },
         
@@ -195,7 +202,7 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
                  $.mobile.loading( "hide" );
                  $('#map-no-location-popup').popup('open');
                  $('#navigation-location').hide();
-
+                 return;
              }
         
         );
@@ -275,9 +282,6 @@ function convertCoordinates(coords){
         
         // use pythagoras to get the y offset 
         var y_offset = Math.round(Math.sqrt( (a.distance_pixels * a.distance_pixels) - (x_offset * x_offset) ));
-        
-        console.log("x_offset = "  +  x_offset);
-        console.log("y_offset = "  +  y_offset);
         
         // This gives us one of four locations around the circle so we create the others too
         candidates.push( {'left': a.left + x_offset, 'top': a.top + y_offset } );

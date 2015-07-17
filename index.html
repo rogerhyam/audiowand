@@ -68,7 +68,7 @@
         <div data-role="header" data-position="fixed" >
             <a href="#index-page" data-transition="slide" data-direction="reverse" data-icon="arrow-l" >List</a>
             <h1>Map</h1>
-            <a data-transition="slide" data-icon="navigation" data-iconpos="right" id="navigation-button" >Navigate</a>
+            <a data-transition="slide" data-icon="navigation" data-iconpos="right" id="navigation-button" >Location</a>
         </div><!-- /header -->
     
         <div data-role="content" id="map-page-content" data-theme="c" >	
@@ -89,9 +89,23 @@
         </div>
         
         <div data-role="popup" id="map-no-location-popup" data-dismissible="false" data-theme="a" class="ui-content ui-corner-all">
-            <h3>No Location</h3>
+            <h3>No location</h3>
             <p>
-                Sorry. Unable to obtain your location via GPS.
+                Sorry. Unable to obtain your location via GPS. Perhaps you are indoors or the tree cover is too thick?
+           </p>
+            <a href="#" class="ui-btn ui-corner-all ui-shadow" data-rel="back">OK</a>
+        </div>
+        <div data-role="popup" id="map-vague-location-popup" data-dismissible="false" data-theme="a" class="ui-content ui-corner-all">
+            <h3>Vague location</h3>
+            <p>
+                Sorry. The GPS returned a location that is only accurate to <span class="location-accuracy">x</span>m and so it isn't possible to plot your location on the map at the moment.
+           </p>
+            <a href="#" class="ui-btn ui-corner-all ui-shadow" data-rel="back">OK</a>
+        </div>        
+        <div data-role="popup" id="map-off-map-popup" data-dismissible="false" data-theme="a" class="ui-content ui-corner-all">
+            <h3>Here be dragons!</h3>
+            <p>
+                According to the location returned by the GPS you outside the area covered by this map so your position can not be plotted.
            </p>
             <a href="#" class="ui-btn ui-corner-all ui-shadow" data-rel="back">OK</a>
         </div>
