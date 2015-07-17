@@ -2,6 +2,23 @@ var audiowand_config = {
     "display_numbers_in_list" : false,
 };
 
+var audiowand_map = {
+    'navigation': true,
+    'image': 'data/images/dawyck_map_1.5k.jpg',
+    'image_width': 1500,
+    'image_height': 1293,
+    'geolocations': [
+    
+        {'longitude': -3.322010, 'latitude': 55.600862, "top":570,"left":1118}, // chapel
+        {'longitude':  -3.322370, 'latitude':  55.603052, "top":1005,"left":900}, // visitor centre back entrance
+        {'longitude':  -3.320370, 'latitude': 55.603348, "top":946,"left":675 }, // house lawn centre
+        {'longitude':  -3.323681, 'latitude':  55.601096, "top":744,"left":1199}, // top of azalea walk vista
+        {'longitude':  -3.321146, 'latitude':  55.599821, "top":312,"left":1152}, // nepal bench
+    
+    ],
+    
+}
+
 var audiowand_pois = [
     
     {
