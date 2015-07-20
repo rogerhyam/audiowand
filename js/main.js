@@ -136,7 +136,7 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
          
          // give them a hold message while we fetch the location
          $.mobile.loading( "show", {
-            text: 'Fetching',
+            text: 'Fetching location',
             textVisible: true,
             textonly: false,
             html: ""
