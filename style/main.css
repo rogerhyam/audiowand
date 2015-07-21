@@ -26,7 +26,6 @@ ul#audiowand-poi-list li.stop-state a:after {
 #map-window{
     width:auto;
     overflow:auto;
-    
     padding: 0px;
     margin: 0px;
     
@@ -34,11 +33,17 @@ ul#audiowand-poi-list li.stop-state a:after {
 
 #map-canvas{
     position:relative;
+    z-index: 0;
+}
+
+#map-canvas #map-image{
+    z-index: 1;
 }
 
 #map-canvas div.map-marker
 {
     position: absolute;
+    z-index: 3;
     color: white;
     background-color:red;
     font-size: 20px;
@@ -56,6 +61,8 @@ ul#audiowand-poi-list li.stop-state a:after {
 #map-canvas div.map-marker:after {
   background-color: red;
 }
+
+
 
 #map-page div.ui-slider-track{
     height: 22px;

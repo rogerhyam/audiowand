@@ -71,7 +71,7 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
     // set the canvas to the same size as the full map
     $('#map-canvas').width(audiowand_map.image_width);
     $('#map-canvas').height(audiowand_map.image_height);
-   
+
    // hide the navigation button if it is not on
    if(!audiowand_map.navigation){
        $('#navigation-button').hide();
@@ -237,6 +237,7 @@ function convertCoordinates(coords){
     var pos = {'x': coords.longitude, 'y': coords.latitude };
     for(var i = 0; i < audiowand_map.geolocations.length; i++){
         var geo = audiowand_map.geolocations[i];
+        console.log(geo.name);
         geo.distance_degrees = getEuclideanDistance(pos, {'x': geo.longitude, 'y': geo.latitude }, true);
     }    
     
@@ -305,15 +306,19 @@ function convertCoordinates(coords){
 }
 
 function getEuclideanDistance(a, b, normalise_latitude){
-    var x = a.x - b.x;
-    var y = a.y - b.y
+    
+    var x = Math.abs(a.x - b.x);
+    var y = Math.abs(a.y - b.y);
     
     // the further from the equator the finer pitch
     // latitude is so we need to normalise it
+    
     if(normalise_latitude){
-        y = y * (y/90);
+        y = y * (1-(y/90));
     }
-    return Math.sqrt( (x * x) + (y * y) ); // pythagorus
+    
+    var dist = Math.sqrt( (x * x) + (y * y) ); // pythagorus
+    return dist;
 }
 
 function updateMapSize(){
