@@ -141,14 +141,16 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
             textonly: false,
             html: ""
          });
+
+         // fixme disable button
          
          // go get the location
-         navigator.geolocation.getCurrentPosition(
+         var watch_handle = navigator.geolocation.watchPosition(
         
              // success
              function(position){
                  $.mobile.loading( "hide" );
-                 
+                               
                  // convert lon/lat to top/left
                  var px = convertCoordinates(position.coords);
 
@@ -180,14 +182,17 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
                  animateNavigationLocationBorder();
                  
                  //centre map on position
-                 var scroll_left = px.left - ($('#map-window').width() / 2);
                  var scroll_top = px.top - ($('#map-window').height() / 2);
-                 $('#map-window').animate({scrollLeft: scroll_left, scrollTop: scroll_top}, 'slow');
+                 var scroll_left = px.left - ($('#map-window').width() / 2);
+
+                 console.log($('#map-window').width());                 
+                 console.log(px.left);
+                 console.log(scroll_left);
                                   
-                 // turn it off after 40 seconds
-                 setTimeout(function(){
-                     $('#navigation-location').hide();
-                 }, 1000 * 40);
+                 $('#map-window').animate({scrollLeft: scroll_left, scrollTop: scroll_top}, 'slow');
+
+                 console.log($('#map-window').scrollLeft());
+
              
              },
         
@@ -197,9 +202,22 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
                  $('#map-no-location-popup').popup('open');
                  $('#navigation-location').hide();
                  return;
+             },
+             
+             // options
+             {
+               enableHighAccuracy: true, 
+               maximumAge        : 10 * 1000, 
+               timeout           : 10 * 1000
              }
         
         );
+        
+        // turn it off after a minute
+        setTimeout(function(){
+            navigator.geolocation.clearWatch(watch_handle);
+            $('#navigation-location').hide();
+        }, 60 * 1000);
          
     
      });

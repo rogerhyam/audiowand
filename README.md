@@ -19,6 +19,7 @@ Setting up a Tour build environment
         cordova plugin add org.apache.cordova.splashscreen
         cordova plugin add org.apache.cordova.statusbar
         cordova plugin add com.cordova.background-audio
+        cordova plugin add org.apache.cordova.geolocation
 * Add the platforms
         cordova platform add ios
         cordova platform add android
