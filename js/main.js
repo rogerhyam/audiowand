@@ -1,19 +1,14 @@
 
-var audiowand_media_player;
-var audiowand_media_player_status;
-var audiowand_play_next = -1;
+// set up an object to act as a namespace
 
-// This is called when moving between pages first with the
-// uri then with the fragment of dom that is about to be displayed.
-
-$(document).bind( "pagecontainerbeforechange", function( e, data ) {
-    
-        // we stop audio on a page change - no matter where we are going...
-        // turn off the audio if it is playing - they must concentrate!
-       // stopAudio();
-       
-});
-
+var audiowand = {    
+    media_player: false,
+    play_next: -1,
+    location_watcher: false,
+    location_imprecise: false,
+    location_error: false,
+    location_current: false,
+};
 
 /*
  *  Page has become visible
@@ -29,9 +24,9 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
          case 'index-page':
          
             // are we supposed to be play something on load - coming from map page
-            if(audiowand_play_next > -1){
+            if(audiowand.play_next > -1){
                 
-                var li = $("#audiowand-poi-list li:nth-child(" + (audiowand_play_next+1) + ")");
+                var li = $("#audiowand-poi-list li:nth-child(" + (audiowand.play_next+1) + ")");
                 
                 // scroll it into view then call play on it
                 // this stops the warning box being scrolled of the page.
@@ -40,8 +35,8 @@ $(document).bind( "pagecontainerbeforechange", function( e, data ) {
                     400,
                     'swing',
                     function(){
-                        if(audiowand_play_next > -1){
-                            audiowand_play_next = -1;
+                        if(audiowand.play_next > -1){
+                            audiowand.play_next = -1;
                             toggleAudio(li);
                         }
                     }
@@ -108,7 +103,7 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
         // and clickable
         div.click(function(e){
             
-            audiowand_play_next = $(this).data('audiowand-poi-index');
+            audiowand.play_next = $(this).data('audiowand-poi-index');
             window.location = '#index-page';
             //var li = $("#audiowand-poi-list li:nth-child(" + (index+1) + ")");
             //toggleAudio(li);
@@ -125,15 +120,22 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
    
 });
 
+/* Great for adding listeners */
 $(document).on('pagecreate', '#map-page', function(e, data) {
+    
      // listen for resize events on the map panel
      $(window).resize(function(e){
           resizeMapWindow();
      });
      
+     
      // listen for clicking on the navigation button.
      $('#navigation-button').on('click', function(){
-         
+    
+         // stop them pressing the button again till we are done
+         $('#navigation-button').addClass('ui-disabled');
+         audiowand.location_current = false;
+    
          // give them a hold message while we fetch the location
          $.mobile.loading( "show", {
             text: 'Fetching location',
@@ -145,32 +147,58 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
          // fixme disable button
          
          // go get the location
-         var watch_handle = navigator.geolocation.watchPosition(
+         audiowand.location_watcher = navigator.geolocation.watchPosition(
         
              // success
              function(position){
-                 $.mobile.loading( "hide" );
-                               
+                  
+                // console.log('https://www.google.co.uk/maps/?q=' + position.coords.latitude + ',' + position.coords.longitude);
+
+                // only do something if we are given a new position
+                if(
+                    audiowand.location_current
+                    && audiowand.location_current.longitude == position.coords.longitude
+                    && audiowand.location_current.latitude == position.coords.latitude
+                    && audiowand.location_current.latitude == position.coords.accuracy
+                ){
+                    return;
+                }
+
                  // convert lon/lat to top/left
                  var px = convertCoordinates(position.coords);
-
-                 // check they actually fall on the map
-                 if(px.top < 0 || px.top > audiowand_map.image_height || px.left < 0 || px.left > audiowand_map.image_width){
-                     $.mobile.loading( "hide" );
+                 
+                 // check accuracy is sufficient
+                 // precision may be defined in the data if not default to 200m
+                 var required_precision = 200;
+                 if(typeof audiowand_map.required_precision !== 'undefined'){
+                     required_precision = audiowand_map.required_precision;
+                 }
+                 if(position.coords.accuracy > required_precision){
+                    audiowand.location_imprecise = true;
+                    return;
+                 }else{
+                     audiowand.location_imprecise = false;
+                 }
+                 
+                 // check they actually fall on the map - die if they don't
+                 if(px.top < 0 || px.top > audiowand_map.image_height || px.left < 0 || px.left > audiowand_map.image_width){                     
+                     
+                     navigator.geolocation.clearWatch(audiowand.location_watcher); // stop gps
+                     $.mobile.loading( "hide" ); // hide the loading
+                     $('#navigation-location').hide(); // hide the dot
+                     $('#navigation-button').removeClass('ui-disabled');
+                     
+                     // display a message.
                      $('#map-off-map-popup').popup('open');
-                     $('#navigation-location').hide();
+    
                      return;
                  }
                  
-                 // check accuracy is sufficient and warn if not
-                 if(position.coords.accuracy > 200){
-                    $.mobile.loading( "hide" );
-                    $('#map-vague-location-popup span.location-accuracy').html(position.coords.accuracy);
-                    $('#map-vague-location-popup').popup('open');
-                    $('#navigation-location').hide();
-                    return;
-                 }
-                 
+                 // got to here so it is plotable.
+                 $.mobile.loading( "hide" );
+                 audiowand.location_error = false;
+                 audiowand.location_current = position.coords;                 
+                
                  // convert to percentage      
                  var top = (px.top / audiowand_map.image_height) * 100;
                  var left = (px.left / audiowand_map.image_width) * 100;
@@ -182,25 +210,17 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
                  animateNavigationLocationBorder();
                  
                  //centre map on position
-                 var scroll_top = px.top - ($('#map-window').height() / 2);
-                 var scroll_left = px.left - ($('#map-window').width() / 2);
-
-                 console.log($('#map-window').width());                 
-                 console.log(px.left);
-                 console.log(scroll_left);
-                                  
+                 var scroll_top = ($('#map-canvas').height() *  (top/100) ) - ($('#map-window').height() / 2);
+                 var scroll_left = ($('#map-canvas').width() * (left/100) ) - ($('#map-window').width() / 2);
                  $('#map-window').animate({scrollLeft: scroll_left, scrollTop: scroll_top}, 'slow');
 
-                 console.log($('#map-window').scrollLeft());
-
-             
              },
         
-             // failure
+             // outright failure!
              function(error){
-                 $.mobile.loading( "hide" );
-                 $('#map-no-location-popup').popup('open');
-                 $('#navigation-location').hide();
+                 console.log(error);
+                 audiowand.location_error = error;
+
                  return;
              },
              
@@ -213,12 +233,27 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
         
         );
         
-        // turn it off after a minute
+        // After 30seconds we stop updating the location
+        // and confess the results if any.
         setTimeout(function(){
-            navigator.geolocation.clearWatch(watch_handle);
-            $('#navigation-location').hide();
-        }, 60 * 1000);
-         
+            
+            navigator.geolocation.clearWatch(audiowand.location_watcher);
+            audiowand.location_current = false;
+            
+            $('#navigation-location').hide(); // hide the dot
+            $.mobile.loading( "hide" ); // hide the loading if it showing
+            
+            // if we never got precise enough tell them.
+            if(audiowand.location_imprecise){
+                $('#map-vague-location-popup span.location-accuracy').html(position.coords.accuracy);
+                $('#map-vague-location-popup').popup('open');
+            }else if(audiowand.location_error){
+                $('#map-no-location-popup').popup('open');
+            }
+            
+            $('#navigation-button').removeClass('ui-disabled');
+            
+        }, 30 * 1000);
     
      });
      
@@ -255,8 +290,9 @@ function convertCoordinates(coords){
     var pos = {'x': coords.longitude, 'y': coords.latitude };
     for(var i = 0; i < audiowand_map.geolocations.length; i++){
         var geo = audiowand_map.geolocations[i];
-        console.log(geo.name);
-        geo.distance_degrees = getEuclideanDistance(pos, {'x': geo.longitude, 'y': geo.latitude }, true);
+        //console.log(geo.name);
+        //geo.distance_degrees = getEuclideanDistance(pos, {'x': geo.longitude, 'y': geo.latitude }, true);
+        geo.distance_degrees = getHaversineDistance(pos, {'x': geo.longitude, 'y': geo.latitude });
     }    
     
     // sort the geolocations by distance from current coords
@@ -273,14 +309,14 @@ function convertCoordinates(coords){
     
     // calculate the local pixel pitch - or scale in px/degree based on the closest two points
     var ab_pixels = getEuclideanDistance({'x': a.left, 'y': a.top }, {'x': b.left, 'y': b.top });
-    var ab_degrees = getEuclideanDistance({'x': a.longitude, 'y': a.latitude }, {'x': b.longitude, 'y': b.latitude }, true);
+    var ab_degrees = getHaversineDistance({'x': a.longitude, 'y': a.latitude }, {'x': b.longitude, 'y': b.latitude });
     var scale = ab_pixels / ab_degrees;
 
-    // distance we are from each of the three nearest points in pixels
-    a.distance_pixels = a.distance_degrees * scale;
-    b.distance_pixels = b.distance_degrees * scale;
-    c.distance_pixels = c.distance_degrees * scale;
-
+    // distance we are from each of the points in pixels
+    for(var i = 0; i < audiowand_map.geolocations.length; i++){
+        audiowand_map.geolocations[i].distance_pixels = audiowand_map.geolocations[i].distance_degrees * scale;
+    }
+    
     // Take the closest point and rotate around it at the scaled distance looking for candidate locations
     // from 0 to half a radian - 90 degrees then do the other four quarters
     var candidates = [];
@@ -291,7 +327,7 @@ function convertCoordinates(coords){
         
         // use pythagoras to get the y offset 
         var y_offset = Math.round(Math.sqrt( (a.distance_pixels * a.distance_pixels) - (x_offset * x_offset) ));
-        
+
         // This gives us one of four locations around the circle so we create the others too
         candidates.push( {'left': a.left + x_offset, 'top': a.top + y_offset } );
         candidates.push( {'left': a.left - x_offset, 'top': a.top + y_offset } );
@@ -300,16 +336,42 @@ function convertCoordinates(coords){
     
     }
     
-    // work through the candidates 
-    // find the distance in pixels on the image and compare it with the distance in pixels calculated from the lat/lon
-    // sum the error of the two
+    // debug lets plot those!
+    /*
     for(var i = 0; i < candidates.length; i++){
-        var x = candidates[i];
-        var xb = getEuclideanDistance({'x': x.left, 'y': x.top },{'x': b.left, 'y': b.top });
-        xb = Math.abs(xb - b.distance_pixels );
-        var xc = getEuclideanDistance({'x': x.left, 'y': x.top },{'x': c.left, 'y': c.top });
-        xc = Math.abs(xc - c.distance_pixels );
-        x.distance_error_pixels = xb + xc;
+        var can = candidates[i];
+        var dot = $('<div style="position:absolute;">*</div>');
+        $('#map-canvas').append(dot);
+        dot.css('top', (can.top / audiowand_map.image_height) * 100 + "%");
+        dot.css('left', (can.left / audiowand_map.image_width) * 100 + "%");
+    }
+    
+    var a_dot = $('<div style="position:absolute;">a</div>');
+    a_dot.css('top', (a.top / audiowand_map.image_height) * 100 + "%")
+    a_dot.css('left', (a.left / audiowand_map.image_width) * 100 + "%");
+    $('#map-canvas').append(a_dot);
+    */
+
+    /*
+        1. We know the approx px distance from pos to every geo reference point
+        2. We work through the candidates and look at their distances to every point
+        3. The candidate that has the most similar set of distances to those of pos is the winner
+    */
+    for(var i = 0; i < candidates.length; i++){
+
+        var total_deviation = 0;
+        
+        var candidate = candidates[i];
+
+        for(var j = 0; j < audiowand_map.geolocations.length; j++){
+            var geo = audiowand_map.geolocations[j];
+            var candidate2geo = getEuclideanDistance({'x': candidate.left, 'y': candidate.top }, {'x': geo.left, 'y': geo.top }); // convert to xy distances
+            var difference = geo.distance_pixels - candidate2geo;
+            total_deviation += Math.abs(difference)/((geo.distance_pixels + candidate2geo)/2); // positive and proportional
+        }
+        
+        candidate.distance_error_pixels = total_deviation;
+
     }
     
     candidates.sort(function(a,b){
@@ -317,24 +379,40 @@ function convertCoordinates(coords){
          if (a.distance_error_pixels > b.distance_error_pixels) return 1;
          return 0;
     });
-    
+  
     // top candidate is returned
     return candidates[0];
     
 }
+/*
+    borrowed from: http://www.movable-type.co.uk/scripts/latlong.html
+*/
+function getHaversineDistance(a, b){
+    
+    var lat1 = a.y;
+    var lon1 = a.x;
+    var lat2 = b.y;
+    var lon2 = b.x;
+    
+    var R = 6371000; // metres
+    var t1 = lat1.toRadians();
+    var t2 = lat2.toRadians();
+    var at = (lat2-lat1).toRadians();
+    var al = (lon2-lon1).toRadians();
+    var a = Math.sin(at/2) * Math.sin(at/2) +
+            Math.cos(t1) * Math.cos(t2) *
+            Math.sin(al/2) * Math.sin(al/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+        
+    return d;
+}
 
-function getEuclideanDistance(a, b, normalise_latitude){
+function getEuclideanDistance(a, b){
     
     var x = Math.abs(a.x - b.x);
     var y = Math.abs(a.y - b.y);
-    
-    // the further from the equator the finer pitch
-    // latitude is so we need to normalise it
-    
-    if(normalise_latitude){
-        y = y * (1-(y/90));
-    }
-    
+//    console.log('x,y :' + x + "," + y);    
     var dist = Math.sqrt( (x * x) + (y * y) ); // pythagorus
     return dist;
 }
@@ -573,38 +651,38 @@ function startAudioCordova(active_li){
     
     // we need to be careful not to create an extra media player
     // if it is undefined or false then go for it
-   if (typeof audiowand_media_player == 'undefined' || audiowand_media_player == false){
+   if (audiowand.media_player == false){
        
-       audiowand_media_player = new Media(media_url,
+       audiowand.media_player = new Media(media_url,
 
            // success callback -- called at the end of playback
            function () {
-               audiowand_media_player.release();
+               audiowand.media_player.release();
                stopAudio();
-               audiowand_media_player = false;
+               audiowand.media_player = false;
            },
 
            // error callback
            function (err) {
-             audiowand_media_player.release();
+             audiowand.media_player.release();
              if (err.code == MediaError.MEDIA_ERR_ABORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_ABORTED");
              if (err.code == MediaError.MEDIA_ERR_NETWORK) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NETWORK");
              if (err.code == MediaError.MEDIA_ERR_DECODE) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_DECODE");
              if (err.code == MediaError.MEDIA_ERR_NONE_SUPPORTED) console.log("playAudio():Audio Error: MediaError.MEDIA_ERR_NONE_SUPPORTED");
-             audiowand_media_player = false;
+             audiowand.media_player = false;
            },
            
            // status callback
            function (status){
-               audiowand_media_player_status = status;
+               audiowand.media_player_status = status;
            }
            
        );
        
        try{
-           audiowand_media_player.play();
+           audiowand.media_player.play();
        }catch(err){
-           audiowand_media_player = false;
+           audiowand.media_player = false;
        }
        
    } // check it doesn't already exist
@@ -644,8 +722,8 @@ function stopAudio(){
 }
 
 function stopAudioCordova(){
-     if(audiowand_media_player){
-         audiowand_media_player.stop();
+     if(audiowand.media_player){
+         audiowand.media_player.stop();
      }
 }
 
@@ -681,14 +759,25 @@ function pauseAudioBrowser(){
 
 function pauseAudioCordova(){
     
-    if (audiowand_media_player){
-        if(audiowand_media_player_status == Media.MEDIA_RUNNING){
-            audiowand_media_player.pause();
+    if (audiowand.media_player){
+        if(audiowand.media_player_status == Media.MEDIA_RUNNING){
+            audiowand.media_player.pause();
             $('#audio-pause-button').addClass('ui-btn-active');
         }else{
-            audiowand_media_player.play();
+            audiowand.media_player.play();
             $('#audio-pause-button').removeClass('ui-btn-active');
         }
     }
     
+}
+
+/** Extend Number object with method to convert numeric degrees to radians */
+if (Number.prototype.toRadians === undefined) {
+    Number.prototype.toRadians = function() { return this * Math.PI / 180; };
+}
+
+
+/** Extend Number object with method to convert radians to numeric (signed) degrees */
+if (Number.prototype.toDegrees === undefined) {
+    Number.prototype.toDegrees = function() { return this * 180 / Math.PI; };
 }

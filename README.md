@@ -20,6 +20,13 @@ Setting up a Tour build environment
         cordova plugin add org.apache.cordova.statusbar
         cordova plugin add com.cordova.background-audio
         cordova plugin add org.apache.cordova.geolocation
+        
+        cordova-plugin-geolocation 1.0.1 "Geolocation"
+        org.apache.cordova.device 0.3.0 "Device"
+        org.apache.cordova.file 1.3.3 "File"
+        org.apache.cordova.media 0.2.16 "Media"
+        org.apache.cordova.statusbar 0.1.10 "StatusBar"
+        
 * Add the platforms
         cordova platform add ios
         cordova platform add android

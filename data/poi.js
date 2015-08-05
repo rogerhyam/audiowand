@@ -7,6 +7,7 @@ var audiowand_map = {
     'image': 'data/images/RBGE_map_2013.jpg',
     'image_width': 1772,
     'image_height': 1626,
+    'required_precision': 200,
     'geolocations': [
     
         {'longitude': -3.322010, 'latitude':  55.963210, "top":1287,"left":1100, "name": 'South from Ting'},
