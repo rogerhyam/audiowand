@@ -11,6 +11,14 @@ var audiowand = {
 };
 
 /*
+ * W H O L E - D O C U M E N T 
+ */
+ $( function() {
+     // set the map image so it is already laoded in the dom
+     $('#map-page div[id="map-page-content"] img').attr('src', audiowand_map.image);
+ });
+
+/*
  *  Page has become visible
  */ 
  $(document).bind( "pagecontainershow", function( e, data ) {
@@ -59,9 +67,7 @@ var audiowand = {
  *  M A P - P A G E 
  */
 $(document).on( "pagebeforecreate", "#map-page", function(event) {
-       
-    // set the map image
-    $('#map-page div[id="map-page-content"] img').attr('src', audiowand_map.image);
+    
    
     // set the canvas to the same size as the full map
     $('#map-canvas').width(audiowand_map.image_width);
@@ -326,8 +332,8 @@ function convertCoordinates(coords){
         var x_offset = Math.round(a.distance_pixels * Math.sin(Math.PI * i));
         
         // use pythagoras to get the y offset 
-        var y_offset = Math.round(Math.sqrt( (a.distance_pixels * a.distance_pixels) - (x_offset * x_offset) ));
-
+        var y_offset = Math.round(Math.sqrt( Math.abs((a.distance_pixels * a.distance_pixels) - (x_offset * x_offset)) ));
+        
         // This gives us one of four locations around the circle so we create the others too
         candidates.push( {'left': a.left + x_offset, 'top': a.top + y_offset } );
         candidates.push( {'left': a.left - x_offset, 'top': a.top + y_offset } );
@@ -352,24 +358,51 @@ function convertCoordinates(coords){
     $('#map-canvas').append(a_dot);
     */
 
-    /*
-        1. We know the approx px distance from pos to every geo reference point
-        2. We work through the candidates and look at their distances to every point
-        3. The candidate that has the most similar set of distances to those of pos is the winner
-    */
+    // we find up to four geopoints that surround our potential position
+    // the geolocations are already arranged by closeness
+    var cardinal = {N: false, E: false, S: false, W: false};
+    for(var i = 0; i < audiowand_map.geolocations.length; i++){
+        
+        // if we have filled all the slots then stop looking
+        if(cardinal.N && cardinal.E && cardinal.S && cardinal.W) break;
+        
+        var geo = audiowand_map.geolocations[i];
+        if(!cardinal.N && geo.latitude > coords.latitude){
+            cardinalN = geo;
+            continue;
+        }
+        if(!cardinal.E && geo.longitude > coords.longitude){
+            cardinal.E = geo;
+            continue;
+        }
+        if(!cardinal.S && geo.latitude < coords.latitude){
+            cardinal.S = geo;
+            continue;
+        }
+        if(!cardinal.W && geo.longitude < coords.longitude){
+            cardinal.W = geo;
+            continue;
+        }
+    
+    }
+      
     for(var i = 0; i < candidates.length; i++){
 
-        var total_deviation = 0;
-        
+        var total_deviation = 0;       
         var candidate = candidates[i];
-
-        for(var j = 0; j < audiowand_map.geolocations.length; j++){
-            var geo = audiowand_map.geolocations[j];
+               
+        $.each(cardinal, function( key, geo ) {
+        
+            // edge of map we might not have a point to the N,S,E or W of current position
+            if(!geo) return;
+            
+            // do the distance from each of the candidates to the for cardinals
             var candidate2geo = getEuclideanDistance({'x': candidate.left, 'y': candidate.top }, {'x': geo.left, 'y': geo.top }); // convert to xy distances
             var difference = geo.distance_pixels - candidate2geo;
-            total_deviation += Math.abs(difference)/((geo.distance_pixels + candidate2geo)/2); // positive and proportional
-        }
+            total_deviation += Math.abs(difference)/((geo.distance_pixels + candidate2geo)/2);
         
+        });
+
         candidate.distance_error_pixels = total_deviation;
 
     }
