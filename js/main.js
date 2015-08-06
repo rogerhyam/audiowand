@@ -8,6 +8,7 @@ var audiowand = {
     location_imprecise: false,
     location_error: false,
     location_current: false,
+    location_distance_off: false,
 };
 
 /*
@@ -141,6 +142,7 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
          // stop them pressing the button again till we are done
          $('#navigation-button').addClass('ui-disabled');
          audiowand.location_current = false;
+         audiowand.location_distance_off = false;
     
          // give them a hold message while we fetch the location
          $.mobile.loading( "show", {
@@ -149,8 +151,6 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
             textonly: false,
             html: ""
          });
-
-         // fixme disable button
          
          // go get the location
          audiowand.location_watcher = navigator.geolocation.watchPosition(
@@ -195,6 +195,15 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
                      $('#navigation-button').removeClass('ui-disabled');
                      
                      // display a message.
+                     if(audiowand.location_distance_off){
+                         var distance_off = Math.round(audiowand.location_distance_off/1000);
+                         $('#map-off-distance span').html(distance_off);
+                         $('#map-off-distance').show();
+                     }else{
+                         $('#map-off-distance span').html('-');
+                         $('#map-off-distance').hide();
+                     }
+                     
                      $('#map-off-map-popup').popup('open');
     
                      return;
@@ -312,6 +321,9 @@ function convertCoordinates(coords){
     var a = audiowand_map.geolocations[0];
     var b = audiowand_map.geolocations[1];
     var c = audiowand_map.geolocations[2];
+    
+    // capture the distance to the nearest point for use in offsite estimate
+    audiowand.location_distance_off = a.distance_degrees;
     
     // calculate the local pixel pitch - or scale in px/degree based on the closest two points
     var ab_pixels = getEuclideanDistance({'x': a.left, 'y': a.top }, {'x': b.left, 'y': b.top });
