@@ -27,20 +27,17 @@
         <icon src="res/android/icon_xhdpi.png" density="xhdpi" />
         <icon src="res/android/icon_xxhdpi.png" density="xxhdpi" />
         <icon src="res/android/icon_xxxhdpi.png" density="xxxhdpi" />
-
-
-        <!-- you can use any density that exists in the Android project 
-        <splash src="res/android/splash-port-hdpi.png" density="land-hdpi"/>
-        <splash src="res/android/splash-port-ldpi.png" density="land-ldpi"/>
-        <splash src="res/android/splash-port-mdpi.png" density="land-mdpi"/>
-        <splash src="res/android/splash-port-xhdpi.png" density="land-xhdpi"/>
-
-        <splash src="res/android/splash-port-hdpi.png" density="port-hdpi"/>
-        <splash src="res/android/splash-port-ldpi.png" density="port-ldpi"/>
-        <splash src="res/android/splash-port-mdpi.png" density="port-mdpi"/>
-        <splash src="res/android/splash-port-xhdpi.png" density="port-xhdpi"/>
         
-        -->
+        <!-- you can use any density that exists in the Android project -->
+        <splash src="res/android/splash_ldpi_landscape.png" density="land-ldpi"/>
+        <splash src="res/android/splash_ldpi_portrait.png" density="port-ldpi"/>
+        <splash src="res/android/splash_mdpi_landscape.png" density="land-mdpi"/>
+        <splash src="res/android/splash_mdpi_portrait.png" density="port-mdpi"/>
+        <splash src="res/android/splash_hdpi_landscape.png" density="land-hdpi"/>
+        <splash src="res/android/splash_hdpi_portrait.png" density="port-hdpi"/>
+        <splash src="res/android/splash_xhdpi_landscape.png" density="land-xhdpi"/>
+        <splash src="res/android/splash_xhdpi_portrait.png" density="port-xhdpi"/>
+        
     </platform>
     
     <platform name="ios">
