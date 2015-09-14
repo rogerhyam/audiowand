@@ -14,18 +14,13 @@ Setting up a Tour build environment
 * Create a Cordova application e.g.
         cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses
 * Add the media plugin and others - the file plugin will be auto added
-        cordova plugin add org.apache.cordova.media
-        cordova plugin add org.apache.cordova.device
-        cordova plugin add org.apache.cordova.splashscreen
-        cordova plugin add org.apache.cordova.statusbar
-        cordova plugin add com.cordova.background-audio
-        cordova plugin add org.apache.cordova.geolocation
         
+        com.cordova.background-audio 1.0.0 "background-audio"
+        cordova-plugin-device 1.0.1 "Device"
         cordova-plugin-geolocation 1.0.1 "Geolocation"
-        org.apache.cordova.device 0.3.0 "Device"
-        org.apache.cordova.file 1.3.3 "File"
-        org.apache.cordova.media 0.2.16 "Media"
-        org.apache.cordova.statusbar 0.1.10 "StatusBar"
+        cordova-plugin-media 1.0.1 "Media"
+        cordova-plugin-splashscreen 2.1.0 "Splashscreen"
+        cordova-plugin-statusbar 1.0.1 "StatusBar"
         
 * Add the platforms
         cordova platform add ios
@@ -70,6 +65,38 @@ Voice Synthesis on Ubuntu
 bash file containing:
 pico2wave -l=en-GB -w lookdave.wav "$1"
 ./lookdave.sh "$(cat lookdave.txt)"
+
+Building an Android App
+=======================
+
+This guide is useful
+
+http://ionicframework.com/docs/guide/publishing.html
+
+
+Make sure it is all up to date
+
+$ sudo npm update -g cordova
+$ cordova platform update android
+$ cordova platform update ios
+
+
+Build it only to release grade
+
+$ cordova build --release android
+
+You need a key
+
+$ keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+
+you need to sign the apk file
+
+$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/birds-of-peramagroon.keystore MainActivity-release-unsigned.apk alias_name
+
+zipalign it for efficiency and also to rename it
+
+/Users/rogerhyam/android-sdks/build-tools/21.1.2/zipalign -v 4 MainActivity-release-unsigned.apk BirdsOfPeramagroon1.0.apk
+
 
 
 
