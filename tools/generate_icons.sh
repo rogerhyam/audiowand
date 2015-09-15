@@ -51,10 +51,41 @@ sips -z 58 58 "../../www/data/images/icon.png"  --out "../../res/ios/icon-small@
 sips -z 50 50 "../../www/data/images/icon.png"  --out "../../res/ios/icon-50.png"
 sips -z 100 100 "../../www/data/images/icon.png"  --out "../../res/ios/icon-50@2x.png"
 
+# iOS splash
+sips -z 480 480 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
+sips -c 480 320 "../../res/ios/working.png"  --out "../../res/ios/Default~iphone.png"
+rm "../../res/ios/working.png"
 
+sips -z 960 960 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
+sips -c 960 640 "../../res/ios/working.png"  --out "../../res/ios/Default@2x~iphone.png"
+rm "../../res/ios/working.png"
 
+sips -z 1024 1024 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
+sips -c 768 1024 "../../res/ios/working.png"  --out "../../res/ios/Default-Landscape~ipad.png"
+sips -c 1024 768 "../../res/ios/working.png"  --out "../../res/ios/Default-Portrait~ipad.png"
+rm "../../res/ios/working.png"
 
+sips -z 2048 2048 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
+sips -c 1536 2048 "../../res/ios/working.png"  --out "../../res/ios/Default-Landscape~ipad.png"
+sips -c 2048 1536 "../../res/ios/working.png"  --out "../../res/ios/Default-Portrait~ipad.png"
+rm "../../res/ios/working.png"
 
+sips -z 2048 2048 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
+sips -c 1536 2048 "../../res/ios/working.png"  --out "../../res/ios/Default-Landscape@2x~ipad.png"
+sips -c 2048 1536 "../../res/ios/working.png"  --out "../../res/ios/Default-Portrait@2x~ipad.png"
+rm "../../res/ios/working.png"
 
+sips -z 1136 1136 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
+sips -c 1136 640 "../../res/ios/working.png"  --out "../../res/ios/Default-568h@2x~iphone.png"
+rm "../../res/ios/working.png"
+
+sips -z 1334 1334 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
+sips -c 1334 750 "../../res/ios/working.png"  --out "../../res/ios/Default-667h.png"
+rm "../../res/ios/working.png"
+
+sips -z 2208 2208 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
+sips -c 2208 1242 "../../res/ios/working.png"  --out "../../res/ios/Default-736h.png"
+sips -c 1242 2208 "../../res/ios/working.png"  --out "../../res/ios/Default-Landscape-736h.png"
+rm "../../res/ios/working.png"
 
 
