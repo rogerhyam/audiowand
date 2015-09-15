@@ -84,8 +84,10 @@
         <splash src="res/ios/Default-736h.png" width="1242" height="2208"/>
         <splash src="res/ios/Default-Landscape-736h.png" width="2208" height="1242"/>
         
-        
-    
     </platform>
+    
+    <access origin="*" />
+    <access origin="mailto://*" launch-external="true" />
+    <access origin="geo://*" launch-external="true" />
     
 </widget>
