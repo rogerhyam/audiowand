@@ -45,11 +45,14 @@ Setting up a Tour build environment
 
 Cordova Plugins Required
 ========================
-org.apache.cordova.file 1.3.3 "File"
-org.apache.cordova.media 0.2.16 "Media"
-org.apache.cordova.device 0.3.0 "Device"
-org.apache.cordova.splashscreen 1.0.0 "Splashscreen"
-org.apache.cordova.statusbar 0.1.10 "StatusBar"
+com.cordova.background-audio 1.0.0 "background-audio"
+cordova-plugin-device 1.0.1 "Device"
+cordova-plugin-file 3.0.0 "File"
+cordova-plugin-geolocation 1.0.1 "Geolocation"
+cordova-plugin-inappbrowser 1.0.1 "InAppBrowser"
+cordova-plugin-media 1.0.1 "Media"
+cordova-plugin-splashscreen 2.1.0 "Splashscreen"
+cordova-plugin-statusbar 1.0.1 "StatusBar"
 
 Useful for Debug
 ================
@@ -71,7 +74,7 @@ pico2wave -l=en-GB -w lookdave.wav "$1"
 Building the icons and splash screens
 =====================================
 
-Create a icon.png that is 500px by 500px in the www/data/images dir
+Create a icon.png that is 512px by 512px in the www/data/images dir - this is used for Google Play store
 Create a splash.jpg that is 1500 by 1500 in the www/data/images dir
 
 The splash can just be the icon on a bigger canvas.
@@ -82,6 +85,13 @@ $ ./update_core.sh
 This is mac only as it uses sips.
 
 res/ios and res/android folders and contents will be created
+
+Also for google play Store need:
+
+*  Feature Graphic - 1024w x 500h 
+*  Promo Graphic - 180 w x 120 h
+
+These are stored in the Dropbox folder for the app
 
 Building an Android App for Deploy
 ==================================
@@ -105,11 +115,11 @@ $ cordova build --release android
 
 You need a key
 
-$ keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+$ keytool -genkey -v -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<appname>.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
 
 you need to sign the apk file
 
-$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/birds-of-peramagroon.keystore MainActivity-release-unsigned.apk alias_name
+$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<appname>.keystore MainActivity-release-unsigned.apk alias_name
 
 zipalign it for efficiency and also to rename it
 

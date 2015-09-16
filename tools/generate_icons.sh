@@ -50,6 +50,10 @@ sips -z 29 29 "../../www/data/images/icon.png"  --out "../../res/ios/icon-small.
 sips -z 58 58 "../../www/data/images/icon.png"  --out "../../res/ios/icon-small@2x.png"
 sips -z 50 50 "../../www/data/images/icon.png"  --out "../../res/ios/icon-50.png"
 sips -z 100 100 "../../www/data/images/icon.png"  --out "../../res/ios/icon-50@2x.png"
+sips -z 40 40 "../../www/data/images/icon.png"  --out "../../res/ios/icon-40.png"
+sips -z 60 60 "../../www/data/images/icon.png"  --out "../../res/ios/icon-60.png"
+sips -z 144 144 "../../www/data/images/icon.png"  --out "../../res/ios/icon-72@2x.png"
+
 
 # iOS splash
 sips -z 480 480 --setProperty format png "../../www/data/images/splash.jpg"  --out "../../res/ios/working.png"
