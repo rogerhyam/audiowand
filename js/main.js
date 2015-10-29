@@ -111,7 +111,8 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
         div.click(function(e){
             
             audiowand.play_next = $(this).data('audiowand-poi-index');
-            window.location = '#index-page';
+            // window.location = '#index-page';
+            $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index-page", {transition: 'flip', direction: 'reverse'});
             //var li = $("#audiowand-poi-list li:nth-child(" + (index+1) + ")");
             //toggleAudio(li);
             
@@ -586,7 +587,7 @@ function resizeMapWindow(){
      
      // swipe page change
      $('#index-page').on('swipeleft', function(){
-         $( ":mobile-pagecontainer" ).pagecontainer( "change", "#map-page", {transition: 'slide'});
+         $( ":mobile-pagecontainer" ).pagecontainer( "change", "#map-page", {transition: 'flip'});
      });
      $('#index-page').on('swiperight', function(){
          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide', reverse: true});
@@ -605,20 +606,18 @@ function resizeMapWindow(){
   */
   
  $(document).on( "pagebeforecreate", "#about-page", function(event) {
- 
     // load the content from the data directory
     $( '#about-page div[data-role="content"]' ).load( "data/about.html" );
- 
  });
  
  $(document).on('pagecreate', '#about-page', function(e, data) {
-      
+     
       $('#about-page').on('swipeleft', function(){
           $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index-page", {transition: 'slide'});
       });
       
       $('#about-page').on('swiperight', function(){
-          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#credits-page", {transition: 'slide', reverse: true});
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#credits-page", {transition: 'flip', reverse: true});
       });
  });
  
@@ -634,11 +633,12 @@ function resizeMapWindow(){
  });
  
  $(document).on('pagecreate', '#credits-page', function(e, data) {
-      
       $('#credits-page').on('swipeleft', function(){
-          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide'});
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'flip'});
       });
-      
+      $('#credits-page').on('swiperight', function(){
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'flip', reverse: true});
+      });
  });
  
 
