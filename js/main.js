@@ -113,7 +113,7 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
             
             audiowand.play_next = $(this).data('audiowand-poi-index');
             // window.location = '#index-page';
-            $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index-page", {transition: 'flip', direction: 'reverse'});
+            $( ":mobile-pagecontainer" ).pagecontainer( "change", "#index-page", {transition: 'fade'});
             //var li = $("#audiowand-poi-list li:nth-child(" + (index+1) + ")");
             //toggleAudio(li);
             
@@ -588,9 +588,6 @@ function resizeMapWindow(){
      }
      
      // swipe page change
-     $('#index-page').on('swipeleft', function(){
-         $( ":mobile-pagecontainer" ).pagecontainer( "change", "#map-page", {transition: 'flip'});
-     });
      $('#index-page').on('swiperight', function(){
          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide', reverse: true});
      });
@@ -619,7 +616,7 @@ function resizeMapWindow(){
       });
       
       $('#about-page').on('swiperight', function(){
-          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#credits-page", {transition: 'flip', reverse: true});
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#credits-page", {transition: 'slide', reverse: true});
       });
  });
  
@@ -636,10 +633,10 @@ function resizeMapWindow(){
  
  $(document).on('pagecreate', '#credits-page', function(e, data) {
       $('#credits-page').on('swipeleft', function(){
-          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'flip'});
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide'});
       });
       $('#credits-page').on('swiperight', function(){
-          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'flip', reverse: true});
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#about-page", {transition: 'slide', reverse: true});
       });
  });
  
