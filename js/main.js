@@ -69,6 +69,7 @@ var audiowand = {
  */
 $(document).on( "pagebeforecreate", "#map-page", function(event) {
     
+    console.log("About Creating map-page");
    
     // set the canvas to the same size as the full map
     $('#map-canvas').width(audiowand_map.image_width);
@@ -131,11 +132,12 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
 /* Great for adding listeners */
 $(document).on('pagecreate', '#map-page', function(e, data) {
     
+    console.log("Creating map-page");
+    
      // listen for resize events on the map panel
      $(window).resize(function(e){
           resizeMapWindow();
      });
-     
      
      // listen for clicking on the navigation button.
      $('#navigation-button').on('click', function(){
