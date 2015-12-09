@@ -80,7 +80,7 @@ Create a splash.jpg that is 1500 by 1500 in the www/data/images dir
 The splash can just be the icon on a bigger canvas.
 
 $ cd audiowand/tools/
-$ ./update_core.sh
+$ ./generate_icons.sh
 
 This is mac only as it uses sips.
 
