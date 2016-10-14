@@ -92,10 +92,17 @@ $(document).on( "pagebeforecreate", "#map-page", function(event) {
         var poi = audiowand_pois[i];
         if (typeof poi.marker == 'undefined') continue;
         
-        var div = $('<div>'+ display_number +'</div>');
+        // markers replacement label - used instead of the number
+        var label = "";
+        if(typeof poi.label != 'undefined') label = poi.label;
+        else label = display_number;
+        
+        var div = $('<div>'+ label + '</div>');
         display_number++;
         
         div.addClass('map-marker');
+        if(typeof poi.class != 'undefined') div.addClass(poi.class);
+        
         //div.addClass('ui-btn-icon-notext');
         //div.addClass('ui-icon-location');
         
@@ -281,6 +288,27 @@ $(document).on('pagecreate', '#map-page', function(e, data) {
      
     // listen to the scroll bar
     $('#slider-zoom').change(updateMapSize);
+    
+    $('#map-canvas').doubleTap(function(){
+        
+        var slider = $('#slider-zoom')[0];
+        var max = parseInt(slider.max);
+        var min = parseInt(slider.min);
+        var val = parseInt(slider.value);
+        var new_val = ((max - val)/2) + val;
+        
+        // if the new value is < 20% of the max we make it the max
+        var range = max - min;
+        var proportion = (new_val - min)/range;
+        if(proportion > 0.8) new_val = max;
+
+        console.log(slider.min + ' - '  + val + ' - ' + slider.max);
+        console.log(slider.min + ' - '  + new_val + ' - ' + slider.max + " : " + proportion);
+        $('#slider-zoom').val(new_val);
+        $('#slider-zoom').slider('refresh');
+
+
+    });
 
 });
 
@@ -472,20 +500,31 @@ function updateMapSize(){
    var new_width = $('#slider-zoom')[0].value;
    var changed_width = $('#map-window img').width() - new_width;
    var scroll_left = $('#map-window').scrollLeft();
-   $('#map-window').scrollLeft(scroll_left - (changed_width/2));
-   
+   var new_scroll_left = parseInt(scroll_left - (changed_width/2));
+   if (new_scroll_left < 0) new_scroll_left = 0;
+      
    var new_height = audiowand_map.image_height * (new_width / audiowand_map.image_width);
    var changed_height = $('#map-window img').height() - new_height;
    var scroll_top = $('#map-window').scrollTop();
-   $('#map-window').scrollTop(scroll_top - (changed_height/2));
-   
+   var new_scroll_top = parseInt(scroll_top - (changed_height/2));
+   if(new_scroll_top < 1) new_scroll_top = 0;
+
    // resize the canvas with the markers on it
    $('#map-canvas').width(new_width);
    $('#map-canvas').height(new_height);
    
-   // set the new width
+   // set the new width of the image
    $('#map-window img').width(new_width);
-
+   
+   // set the scroll position
+   $('#map-window').scrollTop(new_scroll_top);   
+   $('#map-window').scrollLeft(new_scroll_left);
+   
+   /*
+   $('#map-window').animate({ scrollTop: new_scroll_top + "px", scrollLeft: new_scroll_left + "px" }, function(){
+        console.log("finished animation: " +  $('#map-window').scrollTop()); 
+    });
+    */
 }
 
 function resizeMapWindow(){
@@ -825,3 +864,25 @@ if (Number.prototype.toRadians === undefined) {
 if (Number.prototype.toDegrees === undefined) {
     Number.prototype.toDegrees = function() { return this * 180 / Math.PI; };
 }
+
+
+/* add double tap function */
+(function($) {
+     $.fn.doubleTap = function(doubleTapCallback) {
+         return this.each(function(){
+			var elm = this;
+			var lastTap = 0;
+			$(elm).bind('vmousedown', function (e) {
+                                var now = (new Date()).valueOf();
+				var diff = (now - lastTap);
+                                lastTap = now ;
+                                if (diff < 250) {
+		                    if($.isFunction( doubleTapCallback ))
+		                    {
+		                       doubleTapCallback.call(elm);
+		                    }
+                                }      
+			});
+         });
+    }
+})(jQuery);

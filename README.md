@@ -39,6 +39,7 @@ Setting up a Tour build environment
 * Get a copy of the config.xml in the www and remove the Cordova one. We use one in the WWW to make it simpler with Phonegap 
     rm config.xml
     cp audiowand/config.xml www/config.xml
+    ln -s www/config.xml config.xml
 * Build it e.g.
     cordova build android
 * We are now free to change anything under www/data and the www/config.xml. Other files will be overwritten by update_core.sh
@@ -58,6 +59,10 @@ Useful for Debug
 ================
 cd /Users/rogerhyam/android-sdks/platform-tools
 ./adb  logcat CordovaLog:D *:S
+
+adb shell screenrecord /sdcard/movie.mp4
+(Press Ctrl-C to stop)
+adb pull /sdcard/movie.mp4
 
 
 Creating Synthesised Voice on a Mac
@@ -121,9 +126,22 @@ you need to sign the apk file
 
 $ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<appname>.keystore MainActivity-release-unsigned.apk alias_name
 
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/audiowand-dawyck-trees.keystore android-release-unsigned.apk dawyckscottishtrees
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/water-of-leith-walkway.keystore android-release-unsigned.apk waterofleithwalkway
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/tenbreathsmap.keystore android-release-unsigned.apk tenbreathsmap
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/nepalplants.keystore android-release-unsigned.apk nepalplants
+
+
 zipalign it for efficiency and also to rename it
 
-/Users/rogerhyam/android-sdks/build-tools/21.1.2/zipalign -v 4 MainActivity-release-unsigned.apk BirdsOfPeramagroon1.0.apk
+/Users/rogerhyam/android-sdks/build-tools/23.0.2/zipalign -v 4 MainActivity-release-unsigned.apk BirdsOfPeramagroon1.0.apk
+
+/Users/rogerhyam/android-sdks/build-tools/23.0.2/zipalign -v 4 android-release-unsigned.apk NepalPlants.1.0.0.apk
+
+(This is useful keytool -list -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<**>.keystore )
 
 Building an iOS App for Deploy
 ==============================
