@@ -29,7 +29,7 @@ Setting up a Tour build environment
   * `cordova platform add android`
 * Clone a copy of audiowand into the application directory (not www)
   * `git clone https://github.com/rogerhyam/audiowand`
-* Copy the update_core.sh script from the cloned repository to your Cordova project directory and run it.
+* Copy the `update_core.sh` script from the cloned repository to your Cordova project directory and run it.
   * `cp audiowand/update_core.sh .`
   * `chmod +x update_core.sh`
   * `./update_core.sh`
@@ -42,7 +42,7 @@ Setting up a Tour build environment
   * `ln -s www/config.xml config.xml`
 * Build it e.g.
   * `cordova build android`
-* We are now free to change anything under www/data and the www/config.xml. Other files will be overwritten by update_core.sh
+* We are now free to change anything under `www/data` and the `www/config.xml`. Other files will be overwritten by `update_core.sh`
 
 Cordova Plugins Required
 ========================
