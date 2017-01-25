@@ -25,23 +25,23 @@ Setting up a Tour build environment
   *  cordova-plugin-statusbar 1.0.1 "StatusBar"
         
 * Add the platforms
-  *      cordova platform add ios
-  *      cordova platform add android
+  * `cordova platform add ios`
+  * `cordova platform add android`
 * Clone a copy of audiowand into the application directory (not www)
-  *      git clone https://github.com/rogerhyam/audiowand
+  * `git clone https://github.com/rogerhyam/audiowand`
 * Copy the update_core.sh script from the cloned repository to your Cordova project directory and run it.
-  *  cp audiowand/update_core.sh .
-  *  chmod +x update_core.sh
-  *  ./update_core.sh
+  * `cp audiowand/update_core.sh .`
+  * `chmod +x update_core.sh`
+  * `./update_core.sh`
 * (You can run the update_core script anytime you think the git repository might have changed)
 * Initialise your data directory with the test data from the core build you only want to do this once at the beginning!
-  *  cp -r audiowand/data/* www/data
+  * `cp -r audiowand/data/* www/data`
 * Get a copy of the config.xml in the www and remove the Cordova one. We use one in the WWW to make it simpler with Phonegap 
-  *  rm config.xml
-  *  cp audiowand/config.xml www/config.xml
-  *  ln -s www/config.xml config.xml
+  * `rm config.xml`
+  * `cp audiowand/config.xml www/config.xml`
+  * `ln -s www/config.xml config.xml`
 * Build it e.g.
-  *  cordova build android
+  * `cordova build android`
 * We are now free to change anything under www/data and the www/config.xml. Other files will be overwritten by update_core.sh
 
 Cordova Plugins Required
@@ -57,13 +57,14 @@ Cordova Plugins Required
 
 Useful for Debug
 ================
+```
 cd /Users/rogerhyam/android-sdks/platform-tools
 ./adb  logcat CordovaLog:D *:S
 
 adb shell screenrecord /sdcard/movie.mp4
 (Press Ctrl-C to stop)
 adb pull /sdcard/movie.mp4
-
+```
 
 Creating Synthesised Voice on a Mac
 ===================================
@@ -72,9 +73,11 @@ There is a directory in www/data/script that can be used for managing the audio 
 Voice Synthesis on Ubuntu
 ==========================
 
+```
 bash file containing:
 pico2wave -l=en-GB -w lookdave.wav "$1"
 ./lookdave.sh "$(cat lookdave.txt)"
+```
 
 Building the icons and splash screens
 =====================================
@@ -84,8 +87,10 @@ Create a splash.jpg that is 1500 by 1500 in the www/data/images dir
 
 The splash can just be the icon on a bigger canvas.
 
+```
 $ cd audiowand/tools/
 $ ./generate_icons.sh
+```
 
 This is mac only as it uses sips.
 
@@ -111,19 +116,26 @@ Run the Android sdk manager thing to make sure you are up to date
 
 Make sure it is all up to date
 
+```
 $ sudo npm update -g cordova
 $ cordova platform update android
+```
 
 Build it to release grade
 
+```
 $ cordova build --release android
+```
 
 You need a key
 
+```
 $ keytool -genkey -v -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<appname>.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+```
 
 you need to sign the apk file
 
+```
 $ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<appname>.keystore MainActivity-release-unsigned.apk alias_name
 
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/audiowand-dawyck-trees.keystore android-release-unsigned.apk dawyckscottishtrees
@@ -133,7 +145,7 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhya
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/tenbreathsmap.keystore android-release-unsigned.apk tenbreathsmap
 
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/nepalplants.keystore android-release-unsigned.apk nepalplants
-
+```
 
 zipalign it for efficiency and also to rename it
 
