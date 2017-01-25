@@ -10,50 +10,50 @@ Setting up a Tour build environment
 ===================================
 
 * Use Cordova CLI to build the app
-        https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
+  * https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
 * Create a Cordova application e.g.
-        cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses
+  * cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses
 * Add the media plugin and others - the file plugin will be auto added
         
-    com.cordova.background-audio 1.0.0 "background-audio"
-    cordova-plugin-device 1.0.1 "Device"
-    cordova-plugin-file 3.0.0 "File"
-    cordova-plugin-geolocation 1.0.1 "Geolocation"
-    cordova-plugin-inappbrowser 1.0.1 "InAppBrowser"
-    cordova-plugin-media 1.0.1 "Media"
-    cordova-plugin-splashscreen 2.1.0 "Splashscreen"
-    cordova-plugin-statusbar 1.0.1 "StatusBar"
+  *  com.cordova.background-audio 1.0.0 "background-audio"
+  *  cordova-plugin-device 1.0.1 "Device"
+  *  cordova-plugin-file 3.0.0 "File"
+  *  cordova-plugin-geolocation 1.0.1 "Geolocation"
+  *  cordova-plugin-inappbrowser 1.0.1 "InAppBrowser"
+  *  cordova-plugin-media 1.0.1 "Media"
+  *  cordova-plugin-splashscreen 2.1.0 "Splashscreen"
+  *  cordova-plugin-statusbar 1.0.1 "StatusBar"
         
 * Add the platforms
-        cordova platform add ios
-        cordova platform add android
+  *      cordova platform add ios
+  *      cordova platform add android
 * Clone a copy of audiowand into the application directory (not www)
-        git clone https://github.com/rogerhyam/audiowand
+  *      git clone https://github.com/rogerhyam/audiowand
 * Copy the update_core.sh script from the cloned repository to your Cordova project directory and run it.
-    cp audiowand/update_core.sh .
-    chmod +x update_core.sh
-    ./update_core.sh
+  *  cp audiowand/update_core.sh .
+  *  chmod +x update_core.sh
+  *  ./update_core.sh
 * (You can run the update_core script anytime you think the git repository might have changed)
 * Initialise your data directory with the test data from the core build you only want to do this once at the beginning!
-    cp -r audiowand/data/* www/data
+  *  cp -r audiowand/data/* www/data
 * Get a copy of the config.xml in the www and remove the Cordova one. We use one in the WWW to make it simpler with Phonegap 
-    rm config.xml
-    cp audiowand/config.xml www/config.xml
-    ln -s www/config.xml config.xml
+  *  rm config.xml
+  *  cp audiowand/config.xml www/config.xml
+  *  ln -s www/config.xml config.xml
 * Build it e.g.
-    cordova build android
+  *  cordova build android
 * We are now free to change anything under www/data and the www/config.xml. Other files will be overwritten by update_core.sh
 
 Cordova Plugins Required
 ========================
-com.cordova.background-audio 1.0.0 "background-audio"
-cordova-plugin-device 1.0.1 "Device"
-cordova-plugin-file 3.0.0 "File"
-cordova-plugin-geolocation 1.0.1 "Geolocation"
-cordova-plugin-inappbrowser 1.0.1 "InAppBrowser"
-cordova-plugin-media 1.0.1 "Media"
-cordova-plugin-splashscreen 2.1.0 "Splashscreen"
-cordova-plugin-statusbar 1.0.1 "StatusBar"
+* com.cordova.background-audio 1.0.0 "background-audio"
+* cordova-plugin-device 1.0.1 "Device"
+* cordova-plugin-file 3.0.0 "File"
+* cordova-plugin-geolocation 1.0.1 "Geolocation"
+* cordova-plugin-inappbrowser 1.0.1 "InAppBrowser"
+* cordova-plugin-media 1.0.1 "Media"
+* cordova-plugin-splashscreen 2.1.0 "Splashscreen"
+* cordova-plugin-statusbar 1.0.1 "StatusBar"
 
 Useful for Debug
 ================
