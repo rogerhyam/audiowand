@@ -73,8 +73,8 @@ There is a directory in www/data/script that can be used for managing the audio 
 Voice Synthesis on Ubuntu
 ==========================
 
+you need the package `libttspico-utils`, and possibly a bash file containing:
 ```
-bash file containing:
 pico2wave -l=en-GB -w lookdave.wav "$1"
 ./lookdave.sh "$(cat lookdave.txt)"
 ```
