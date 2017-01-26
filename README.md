@@ -12,7 +12,7 @@ Setting up a Tour build environment
 * Use Cordova CLI to build the app
   * https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
 * Create a Cordova application e.g.
-  * cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses
+  * `cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses`
 * Add the media plugin and others - the file plugin will be auto added
         
   *  com.cordova.background-audio 1.0.0 "background-audio"
@@ -34,7 +34,7 @@ Setting up a Tour build environment
   * `chmod +x update_core.sh`
   * `./update_core.sh`
 * (You can run the update_core script anytime you think the git repository might have changed)
-* Initialise your data directory with the test data from the core build you only want to do this once at the beginning!
+* Initialise your data directory with the test data from the core build. You only want to do this once at the beginning!
   * `cp -r audiowand/data/* www/data`
 * Get a copy of the config.xml in the www and remove the Cordova one. We use one in the WWW to make it simpler with Phonegap 
   * `rm config.xml`
@@ -73,7 +73,7 @@ There is a directory in www/data/script that can be used for managing the audio 
 Voice Synthesis on Ubuntu
 ==========================
 
-you need the package `libttspico-utils`, and possibly a bash file containing:
+You need the package `libttspico-utils`, and possibly a bash file containing:
 ```
 pico2wave -l=en-GB -w lookdave.wav "$1"
 ./lookdave.sh "$(cat lookdave.txt)"
@@ -83,6 +83,7 @@ Building the icons and splash screens
 =====================================
 
 Create a icon.png that is 512px by 512px in the www/data/images dir - this is used for Google Play store
+
 Create a splash.jpg that is 1500 by 1500 in the www/data/images dir
 
 The splash can just be the icon on a bigger canvas.
@@ -127,33 +128,39 @@ Build it to release grade
 $ cordova build --release android
 ```
 
+Most data dealing with keys goes in the same directory. We call it for ease
+of use `KEYSTOREDIR`. The location on your system will be something else, of
+course.
+
+`export KEYSTOREDIR=/Users/rogerhyam/Dropbox/RBGE/apps/deploy/android`
+
 You need a key
 
 ```
-$ keytool -genkey -v -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<appname>.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkey -v -keystore $KEYSTOREDIR/<appname>.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-you need to sign the apk file
+You need to sign each apk file you generate. The following are a couple of examples. Adapt them to your needs, or copy them verbatim if they apply to you.
+
+`jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/`<appname>`.keystore `MainActivity`-release-unsigned.apk `alias_name
 
 ```
-$ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<appname>.keystore MainActivity-release-unsigned.apk alias_name
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/audiowand-dawyck-trees.keystore android-release-unsigned.apk dawyckscottishtrees
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/audiowand-dawyck-trees.keystore android-release-unsigned.apk dawyckscottishtrees
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/water-of-leith-walkway.keystore android-release-unsigned.apk waterofleithwalkway
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/water-of-leith-walkway.keystore android-release-unsigned.apk waterofleithwalkway
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/tenbreathsmap.keystore android-release-unsigned.apk tenbreathsmap
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/tenbreathsmap.keystore android-release-unsigned.apk tenbreathsmap
-
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/nepalplants.keystore android-release-unsigned.apk nepalplants
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/nepalplants.keystore android-release-unsigned.apk nepalplants
 ```
 
 zipalign it for efficiency and also to rename it
 
-/Users/rogerhyam/android-sdks/build-tools/23.0.2/zipalign -v 4 MainActivity-release-unsigned.apk BirdsOfPeramagroon1.0.apk
+`zipalign -v 4 MainActivity-release-unsigned.apk BirdsOfPeramagroon1.0.apk`
 
-/Users/rogerhyam/android-sdks/build-tools/23.0.2/zipalign -v 4 android-release-unsigned.apk NepalPlants.1.0.0.apk
+`zipalign -v 4 android-release-unsigned.apk NepalPlants.1.0.0.apk`
 
-(This is useful keytool -list -keystore /Users/rogerhyam/Dropbox/RBGE/apps/deploy/android/<**>.keystore )
+(This is useful `keytool -list -keystore $KEYSTOREDIR/<**>.keystore` )
 
 Building an iOS App for Deploy
 ==============================
