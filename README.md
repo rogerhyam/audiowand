@@ -15,7 +15,7 @@ Setting up a Tour build environment
   * `cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses`
   
     this will create a `glasshouses` directory at your current location.
-* Add the media plugin and others (`cordova plugin add <name>`) - the file plugin will be auto added 
+* Add the media plugin and others (`cordova plugin add <name>`)
         
   *  cordova-plugin-background-audio 1.0.0 "background-audio"
   *  cordova-plugin-device 1.0.1 "Device"
