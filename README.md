@@ -27,7 +27,7 @@ Setting up a Tour build environment
   *  cordova-plugin-statusbar 1.0.1 "StatusBar"
         
 * Add the platforms
-  * `cordova platform add ios`
+  * `cordova platform add ios` (WARNING: Applications for platform ios can not be built on linux)
   * `cordova platform add android`
 * Clone a copy of audiowand into the application directory (not www)
   * `git clone https://github.com/rogerhyam/audiowand`
