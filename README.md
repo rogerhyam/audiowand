@@ -13,6 +13,8 @@ Setting up a Tour build environment
   * https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
 * Create a Cordova application e.g.
   * `cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses`
+  
+    this will create a `glasshouses` directory at your current location.
 * Add the media plugin and others - the file plugin will be auto added
         
   *  com.cordova.background-audio 1.0.0 "background-audio"
