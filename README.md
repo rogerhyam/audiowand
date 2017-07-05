@@ -13,9 +13,11 @@ Setting up a Tour build environment
   * https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
 * Create a Cordova application e.g.
   * `cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses`
-* Add the media plugin and others - the file plugin will be auto added
+  
+    this will create a `glasshouses` directory at your current location.
+* Add the media plugin and others (`cordova plugin add <name>`)
         
-  *  com.cordova.background-audio 1.0.0 "background-audio"
+  *  cordova-plugin-background-audio 1.0.0 "background-audio"
   *  cordova-plugin-device 1.0.1 "Device"
   *  cordova-plugin-file 3.0.0 "File"
   *  cordova-plugin-geolocation 1.0.1 "Geolocation"
@@ -25,7 +27,7 @@ Setting up a Tour build environment
   *  cordova-plugin-statusbar 1.0.1 "StatusBar"
         
 * Add the platforms
-  * `cordova platform add ios`
+  * `cordova platform add ios` (WARNING: Applications for platform ios can not be built on linux)
   * `cordova platform add android`
 * Clone a copy of audiowand into the application directory (not www)
   * `git clone https://github.com/rogerhyam/audiowand`
