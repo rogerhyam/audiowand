@@ -34,10 +34,10 @@ Setting up a Tour build environment
 * Copy the `update_core.sh` script from the cloned repository to your Cordova project directory and run it.
   * `ln -s audiowand/update_core.sh .`
   * `./update_core.sh`
-* (You can run the update_core script anytime you think the git repository might have changed)
+* (You can run the `update_core.sh` script anytime you think the git repository might have changed)
 * Initialise your data directory with the test data from the core build. You only want to do this once at the beginning!
   * `cp -r audiowand/data/* www/data`
-* Get a copy of the config.xml in the www and remove the Cordova one. We use one in the WWW to make it simpler with Phonegap 
+* Replace the default Cordova `config.xml` with the one from audiowand. We use one in the WWW to make it simpler with Phonegap 
   * `rm config.xml`
   * `cp audiowand/config.xml www/config.xml`
   * `ln -s www/config.xml config.xml`
