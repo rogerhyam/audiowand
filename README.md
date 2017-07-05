@@ -30,8 +30,7 @@ Setting up a Tour build environment
 * Clone a copy of audiowand into the application directory (not www)
   * `git clone https://github.com/rogerhyam/audiowand`
 * Copy the `update_core.sh` script from the cloned repository to your Cordova project directory and run it.
-  * `cp audiowand/update_core.sh .`
-  * `chmod +x update_core.sh`
+  * `ln -s audiowand/update_core.sh .`
   * `./update_core.sh`
 * (You can run the update_core script anytime you think the git repository might have changed)
 * Initialise your data directory with the test data from the core build. You only want to do this once at the beginning!
