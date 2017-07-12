@@ -9,12 +9,21 @@ n.b. This is early days - don't get excited!
 Setting up a Tour build environment
 ===================================
 
+logic behind the instructions: every tour is separate from the original
+audiowand application. audiowand is under source version control, tours are
+not, or not yet. for each tour, we create a cordova application, we clone
+into it the audiowand sources, most of audiowand is kept linked to the git
+repository, and we will update it whenever necessary, parts we copy into the
+project, and by doing so we separate it from version control.
+
 * Use Cordova CLI to build the app
   * https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
 * Create a Cordova application e.g.
-  * `cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses`
+  * ``cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses``
   
-    this will create a `glasshouses` directory at your current location.
+    this will create a ``glasshouses`` directory at your current
+    location. the rest of the instructions assume that your project
+    directory is the work directory.
 * Add the media plugin and others (`cordova plugin add <name>`)
         
   *  cordova-plugin-background-audio 1.0.0 "background-audio"
@@ -27,23 +36,26 @@ Setting up a Tour build environment
   *  cordova-plugin-statusbar 1.0.1 "StatusBar"
         
 * Add the platforms
-  * `cordova platform add ios` (WARNING: Applications for platform ios can not be built on linux)
-  * `cordova platform add android`
-* Clone a copy of audiowand into the application directory (not www)
-  * `git clone https://github.com/rogerhyam/audiowand`
-* Copy the `update_core.sh` script from the cloned repository to your Cordova project directory and run it.
-  * `ln -s audiowand/update_core.sh .`
-  * `./update_core.sh`
-* (You can run the `update_core.sh` script anytime you think the git repository might have changed)
+  * ``cordova platform add ios`` (WARNING: Applications for platform ios can not be built on linux)
+  * ``cordova platform add android``
+* Clone a copy of audiowand into the application directory (not www), or if
+  you already cloned it for development, link your local clone to the
+  audiowand directory
+  * ``git clone https://github.com/rogerhyam/audiowand``
+  * ``ln -s <wherever your clone is> audiowand``
+* Copy the ``update_core.sh`` script from the cloned repository to your Cordova project directory and run it.
+  * ``ln -s audiowand/update_core.sh .``
+  * ``./update_core.sh``
+* (You can run the ``update_core.sh`` script anytime you think the git repository might have changed)
 * Initialise your data directory with the test data from the core build. You only want to do this once at the beginning!
-  * `cp -r audiowand/data/* www/data`
-* Replace the default Cordova `config.xml` with the one from audiowand. We use one in the WWW to make it simpler with Phonegap 
-  * `rm config.xml`
-  * `cp audiowand/config.xml www/config.xml`
-  * `ln -s www/config.xml config.xml`
+  * ``cp -r audiowand/data/* www/data``
+* Replace the default Cordova ``config.xml`` with the one from audiowand. We use one in the WWW to make it simpler with Phonegap 
+  * ``rm config.xml``
+  * ``cp audiowand/config.xml www/config.xml``
+  * ``ln -s www/config.xml config.xml``
 * Build it e.g.
-  * `cordova build android`
-* We are now free to change anything under `www/data` and the `www/config.xml`. Other files will be overwritten by `update_core.sh`
+  * ``cordova build android``
+* We are now free to change anything under ``www/data`` and the ``www/config.xml``. Other files will be overwritten by ``update_core.sh``
 
 Cordova Plugins Required
 ========================
@@ -74,7 +86,7 @@ There is a directory in www/data/script that can be used for managing the audio 
 Voice Synthesis on Ubuntu
 ==========================
 
-You need the package `libttspico-utils`, and possibly a bash file containing:
+You need the package ``libttspico-utils``, and possibly a bash file containing:
 ```
 pico2wave -l=en-GB -w lookdave.wav "$1"
 ./lookdave.sh "$(cat lookdave.txt)"
@@ -130,10 +142,10 @@ $ cordova build --release android
 ```
 
 Most data dealing with keys goes in the same directory. We call it for ease
-of use `KEYSTOREDIR`. The location on your system will be something else, of
+of use ``KEYSTOREDIR``. The location on your system will be something else, of
 course.
 
-`export KEYSTOREDIR=/Users/rogerhyam/Dropbox/RBGE/apps/deploy/android`
+``export KEYSTOREDIR=/Users/rogerhyam/Dropbox/RBGE/apps/deploy/android``
 
 You need a key
 
@@ -143,7 +155,7 @@ keytool -genkey -v -keystore $KEYSTOREDIR/<appname>.keystore -alias alias_name -
 
 You need to sign each apk file you generate. The following are a couple of examples. Adapt them to your needs, or copy them verbatim if they apply to you.
 
-`jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/`<appname>`.keystore `MainActivity`-release-unsigned.apk `alias_name
+``jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/<appname>.keystore MainActivity-release-unsigned.apk alias_name``
 
 ```
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/audiowand-dawyck-trees.keystore android-release-unsigned.apk dawyckscottishtrees
@@ -157,11 +169,11 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/ne
 
 zipalign it for efficiency and also to rename it
 
-`zipalign -v 4 MainActivity-release-unsigned.apk BirdsOfPeramagroon1.0.apk`
+``zipalign -v 4 MainActivity-release-unsigned.apk BirdsOfPeramagroon1.0.apk``
 
-`zipalign -v 4 android-release-unsigned.apk NepalPlants.1.0.0.apk`
+``zipalign -v 4 android-release-unsigned.apk NepalPlants.1.0.0.apk``
 
-(This is useful `keytool -list -keystore $KEYSTOREDIR/<**>.keystore` )
+(This is useful ``keytool -list -keystore $KEYSTOREDIR/<**>.keystore`` )
 
 Building an iOS App for Deploy
 ==============================
