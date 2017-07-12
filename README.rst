@@ -10,20 +10,25 @@ Setting up a Tour build environment
 ===================================
 
 logic behind the instructions: every tour is separate from the original
-audiowand application. audiowand is under source version control, tours are
-not, or not yet. for each tour, we create a cordova application, we clone
-into it the audiowand sources, most of audiowand is kept linked to the git
-repository, and we will update it whenever necessary, parts we copy into the
-project, and by doing so we separate it from version control.
+audiowand template application. ``audiowand`` is under source version
+control, tours are not, or at least not in this setup. For each tour, we
+create a cordova application, we clone into it the audiowand sources, most
+of audiowand is kept linked to the git repository, and we will update it
+whenever necessary, parts we copy into the project, and by doing so we
+separate it from version control.
 
 * Use Cordova CLI to build the app
+
   * https://cordova.apache.org/docs/en/4.0.0/guide_cli_index.md.html
+
 * Create a Cordova application e.g.
+
   * ``cordova create glasshouses uk.org.rbge.hyam.audiowand.glasshouses Glasshouses``
   
     this will create a ``glasshouses`` directory at your current
     location. the rest of the instructions assume that your project
     directory is the work directory.
+
 * Add the media plugin and others (`cordova plugin add <name>`)
         
   *  cordova-plugin-background-audio 1.0.0 "background-audio"
@@ -36,29 +41,42 @@ project, and by doing so we separate it from version control.
   *  cordova-plugin-statusbar 1.0.1 "StatusBar"
         
 * Add the platforms
+
   * ``cordova platform add ios`` (WARNING: Applications for platform ios can not be built on linux)
   * ``cordova platform add android``
+
 * Clone a copy of audiowand into the application directory (not www), or if
   you already cloned it for development, link your local clone to the
   audiowand directory
+
   * ``git clone https://github.com/rogerhyam/audiowand``
   * ``ln -s <wherever your clone is> audiowand``
+
 * Copy the ``update_core.sh`` script from the cloned repository to your Cordova project directory and run it.
+
   * ``ln -s audiowand/update_core.sh .``
   * ``./update_core.sh``
+
 * (You can run the ``update_core.sh`` script anytime you think the git repository might have changed)
 * Initialise your data directory with the test data from the core build. You only want to do this once at the beginning!
+
   * ``cp -r audiowand/data/* www/data``
+
 * Replace the default Cordova ``config.xml`` with the one from audiowand. We use one in the WWW to make it simpler with Phonegap 
+
   * ``rm config.xml``
   * ``cp audiowand/config.xml www/config.xml``
   * ``ln -s www/config.xml config.xml``
+
 * Build it e.g.
+
   * ``cordova build android``
+
 * We are now free to change anything under ``www/data`` and the ``www/config.xml``. Other files will be overwritten by ``update_core.sh``
 
 Cordova Plugins Required
 ========================
+
 * com.cordova.background-audio 1.0.0 "background-audio"
 * cordova-plugin-device 1.0.1 "Device"
 * cordova-plugin-file 3.0.0 "File"
