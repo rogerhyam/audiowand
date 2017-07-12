@@ -92,27 +92,27 @@ Cordova Plugins Required
 
 Useful for Debug
 ================
-```
-cd /Users/rogerhyam/android-sdks/platform-tools
-./adb  logcat CordovaLog:D *:S
 
-adb shell screenrecord /sdcard/movie.mp4
-(Press Ctrl-C to stop)
-adb pull /sdcard/movie.mp4
-```
+::
+    cd /Users/rogerhyam/android-sdks/platform-tools
+    ./adb  logcat CordovaLog:D *:S
+
+    adb shell screenrecord /sdcard/movie.mp4
+    (Press Ctrl-C to stop)
+    adb pull /sdcard/movie.mp4
 
 Creating Synthesised Voice on a Mac
 ===================================
+
 There is a directory in www/data/script that can be used for managing the audio scripts. There is a bash script in there for generating synthetic voice for testing on a mac.
 
 Voice Synthesis on Ubuntu
 ==========================
 
-You need the package ``libttspico-utils``, and possibly a bash file containing:
-```
-pico2wave -l=en-GB -w lookdave.wav "$1"
-./lookdave.sh "$(cat lookdave.txt)"
-```
+You need the package ``libttspico-utils``, and possibly a bash file containing::
+
+  pico2wave -l=en-GB -w lookdave.wav "$1"
+  ./lookdave.sh "$(cat lookdave.txt)"
 
 Building the icons and splash screens
 =====================================
@@ -121,12 +121,10 @@ Create a icon.png that is 512px by 512px in the www/data/images dir - this is us
 
 Create a splash.jpg that is 1500 by 1500 in the www/data/images dir
 
-The splash can just be the icon on a bigger canvas.
+The splash can just be the icon on a bigger canvas::
 
-```
-$ cd audiowand/tools/
-$ ./generate_icons.sh
-```
+  $ cd audiowand/tools/
+  $ ./generate_icons.sh
 
 This is mac only as it uses sips.
 
@@ -150,44 +148,36 @@ Run the Android sdk manager thing to make sure you are up to date
 
 /Users/rogerhyam/android-sdks/tools/android
 
-Make sure it is all up to date
+Make sure it is all up to date::
 
-```
-$ sudo npm update -g cordova
-$ cordova platform update android
-```
+  $ sudo npm update -g cordova
+  $ cordova platform update android
 
-Build it to release grade
+Build it to release grade::
 
-```
-$ cordova build --release android
-```
+  $ cordova build --release android
 
 Most data dealing with keys goes in the same directory. We call it for ease
 of use ``KEYSTOREDIR``. The location on your system will be something else, of
-course.
+course::
 
-``export KEYSTOREDIR=/Users/rogerhyam/Dropbox/RBGE/apps/deploy/android``
+  export KEYSTOREDIR=/Users/rogerhyam/Dropbox/RBGE/apps/deploy/android
 
-You need a key
+You need a key::
 
-```
-keytool -genkey -v -keystore $KEYSTOREDIR/<appname>.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
-```
+  keytool -genkey -v -keystore $KEYSTOREDIR/<appname>.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
 
-You need to sign each apk file you generate. The following are a couple of examples. Adapt them to your needs, or copy them verbatim if they apply to you.
+You need to sign each apk file you generate. The following are a couple of examples. Adapt them to your needs, or copy them verbatim if they apply to you::
 
-``jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/<appname>.keystore MainActivity-release-unsigned.apk alias_name``
+  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/<appname>.keystore MainActivity-release-unsigned.apk alias_name
 
-```
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/audiowand-dawyck-trees.keystore android-release-unsigned.apk dawyckscottishtrees
+  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/audiowand-dawyck-trees.keystore android-release-unsigned.apk dawyckscottishtrees
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/water-of-leith-walkway.keystore android-release-unsigned.apk waterofleithwalkway
+  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/water-of-leith-walkway.keystore android-release-unsigned.apk waterofleithwalkway
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/tenbreathsmap.keystore android-release-unsigned.apk tenbreathsmap
+  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/tenbreathsmap.keystore android-release-unsigned.apk tenbreathsmap
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/nepalplants.keystore android-release-unsigned.apk nepalplants
-```
+  jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $KEYSTOREDIR/nepalplants.keystore android-release-unsigned.apk nepalplants
 
 zipalign it for efficiency and also to rename it
 
@@ -201,6 +191,4 @@ Building an iOS App for Deploy
 ==============================
 
 $ cordova platform update ios
-
-
 
