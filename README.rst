@@ -58,7 +58,11 @@ separate it from version control.
   * ``./update_core.sh``
 
 * (You can run the ``update_core.sh`` script anytime you think the git repository might have changed)
-* Initialise your data directory with the test data from the core build. You only want to do this once at the beginning!
+
+* Initialise your ``www/data`` directory with the test data from the core
+  template audiowand application. You only do this once at the beginning,
+  because these files hold your customised tour and you do not want to
+  overwrite them with template data.
 
   * ``cp -r audiowand/data/* www/data``
 
